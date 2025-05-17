@@ -7,6 +7,7 @@
 #include <QCursor>
 #include <QScreen>
 #include <QGuiApplication>
+#include <QEvent>
 
 TaskWindow::TaskWindow(const QList<TaskWidget*>& tasks, QWidget* parent)
     : QWidget(parent,
@@ -16,11 +17,12 @@ TaskWindow::TaskWindow(const QList<TaskWidget*>& tasks, QWidget* parent)
             | Qt::FramelessWindowHint)
 {
     setAttribute(Qt::WA_DeleteOnClose, true);
-    setMinimumWidth(400);
+    setMinimumWidth(200);
+    setFocusPolicy(Qt::StrongFocus);
 
     auto* layout = new QVBoxLayout(this);
-    layout->setContentsMargins(4, 4, 4, 4);
-    layout->setSpacing(4);
+    layout->setContentsMargins(2, 2, 2, 2);
+    layout->setSpacing(2);
 
     for (TaskWidget* task : tasks) {
         if (!task) continue;
@@ -65,6 +67,14 @@ TaskWindow::TaskWindow(const QList<TaskWidget*>& tasks, QWidget* parent)
     raise();
     activateWindow();
     setFocus(Qt::OtherFocusReason);
+}
+
+void TaskWindow::changeEvent(QEvent* event)
+{
+    if (event->type() == QEvent::ActivationChange && !isActiveWindow()) {
+        close();
+    }
+    QWidget::changeEvent(event);
 }
 
 void TaskWindow::keyPressEvent(QKeyEvent* ev)

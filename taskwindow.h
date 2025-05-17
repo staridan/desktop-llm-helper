@@ -3,16 +3,12 @@
 
 #include <QWidget>
 #include <QList>
+#include <QEvent>
+#include <QKeyEvent>
 
 class TaskWidget;
 
-/**
- * @brief Независимое окно со списком задач.
- *
- *  • Всегда поверх всех окон (Qt::WindowStaysOnTopHint)  
- *  • Получает фокус сразу после показа  
- *  • Закрывается по нажатию выбранной кнопки или по Esc
- */
+
 class TaskWindow : public QWidget
 {
     Q_OBJECT
@@ -21,6 +17,8 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent* ev) override;
+    void changeEvent(QEvent* event) override;
+
 };
 
 #endif // TASKWINDOW_H
