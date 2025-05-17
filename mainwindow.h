@@ -40,6 +40,7 @@ private:
     QString prevHotkey;
     bool hotkeyCaptured;
     HotkeyManager* hotkeyManager;
+    bool loadingConfig;
 
     void loadConfig();
     void saveConfig();

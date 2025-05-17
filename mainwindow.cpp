@@ -121,6 +121,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , hotkeyCaptured(false)
     , hotkeyManager(new HotkeyManager(this))
+    , loadingConfig(false)
 {
     instance = this;
     ui->setupUi(this);
@@ -191,12 +192,16 @@ void MainWindow::loadConfig()
     if (!file.exists() || !file.open(QIODevice::ReadOnly))
         return;
 
+    loadingConfig = true;
+
     const QByteArray data = file.readAll();
     file.close();
 
     const QJsonDocument doc = QJsonDocument::fromJson(data);
-    if (doc.isNull() || !doc.isObject())
+    if (doc.isNull() || !doc.isObject()) {
+        loadingConfig = false;
         return;
+    }
 
     const QJsonObject root = doc.object();
     const QJsonObject settings = root.value("settings").toObject();
@@ -228,10 +233,15 @@ void MainWindow::loadConfig()
         QString tabLabel = task->name().isEmpty() ? tr("<Без имени>") : task->name();
         ui->tasksTabWidget->addTab(task, tabLabel);
     }
+
+    loadingConfig = false;
 }
 
 void MainWindow::saveConfig()
 {
+    if (loadingConfig)
+        return;
+
     QJsonObject settings{
         { "apiEndpoint", ui->lineEditApiEndpoint->text() },
         { "modelName",   ui->lineEditModelName->text()   },
