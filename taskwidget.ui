@@ -57,6 +57,9 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayoutOptions">
+     <property name="alignment">
+      <set>Qt::AlignLeft</set>
+     </property>
      <item>
       <widget class="QRadioButton" name="radioInsert">
        <property name="text">
