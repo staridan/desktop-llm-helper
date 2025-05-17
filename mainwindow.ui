@@ -11,31 +11,19 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Настройки</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="leftMargin">
-     <number>4</number>
-    </property>
-    <property name="topMargin">
-     <number>4</number>
-    </property>
-    <property name="rightMargin">
-     <number>4</number>
-    </property>
-    <property name="bottomMargin">
-     <number>4</number>
-    </property>
+    <property name="leftMargin"><number>4</number></property>
+    <property name="topMargin"><number>4</number></property>
+    <property name="rightMargin"><number>4</number></property>
+    <property name="bottomMargin"><number>4</number></property>
     <item>
      <widget class="QTabWidget" name="tabWidget">
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
+      <property name="currentIndex"><number>0</number></property>
       <widget class="QWidget" name="tab">
-       <attribute name="title">
-        <string>Основные настройки</string>
-       </attribute>
+       <attribute name="title"><string>Основные настройки</string></attribute>
        <layout class="QFormLayout" name="formLayoutSettings">
         <property name="labelAlignment">
          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
@@ -43,89 +31,53 @@
         <property name="formAlignment">
          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
         </property>
-        <property name="horizontalSpacing">
-         <number>6</number>
-        </property>
-        <property name="verticalSpacing">
-         <number>6</number>
-        </property>
+        <property name="horizontalSpacing"><number>6</number></property>
+        <property name="verticalSpacing"><number>6</number></property>
         <item row="0" column="0">
          <widget class="QLabel" name="labelApiEndpoint">
-          <property name="text">
-           <string>Адрес API эндпоинта</string>
-          </property>
+          <property name="text"><string>Адрес API эндпоинта</string></property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="lineEditApiEndpoint">
-          <property name="text">
-           <string>https://api.proxyapi.ru/openai/v1/chat/completions</string>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="lineEditApiEndpoint"/>
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="labelModelName">
-          <property name="text">
-           <string>Название модели</string>
-          </property>
+          <property name="text"><string>Название модели</string></property>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="lineEditModelName">
-          <property name="text">
-           <string>gpt-4.1-mini-2025-04-14</string>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="lineEditModelName"/>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="labelApiKey">
-          <property name="text">
-           <string>API ключ</string>
-          </property>
+          <property name="text"><string>API ключ</string></property>
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QLineEdit" name="lineEditApiKey">
-          <property name="text">
-           <string>KEY_VALUE_HERE</string>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="lineEditApiKey"/>
         </item>
         <item row="3" column="0">
          <widget class="QLabel" name="labelProxy">
-          <property name="text">
-           <string>Прокси</string>
-          </property>
+          <property name="text"><string>Прокси</string></property>
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QLineEdit" name="lineEditProxy">
-          <property name="text">
-           <string>http://127.0.0.1:7890</string>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="lineEditProxy"/>
         </item>
         <item row="4" column="0">
          <widget class="QLabel" name="labelHotkey">
-          <property name="text">
-           <string>Хоткей для вызова меню</string>
-          </property>
+          <property name="text"><string>Хоткей для вызова меню</string></property>
          </widget>
         </item>
         <item row="4" column="1">
          <layout class="QHBoxLayout" name="horizontalLayoutScan">
           <item>
-           <widget class="QLineEdit" name="lineEditHotkey">
-            <property name="text">
-             <string>Win+A</string>
-            </property>
-           </widget>
+           <widget class="QLineEdit" name="lineEditHotkey"/>
           </item>
           <item>
            <widget class="QPushButton" name="pushButtonScan">
-            <property name="text">
-             <string>Сканировать</string>
-            </property>
+            <property name="text"><string>Сканировать</string></property>
            </widget>
           </item>
          </layout>
@@ -133,53 +85,28 @@
        </layout>
       </widget>
       <widget class="QWidget" name="tab_2">
-       <attribute name="title">
-        <string>Задачи</string>
-       </attribute>
+       <attribute name="title"><string>Задачи</string></attribute>
        <layout class="QVBoxLayout" name="verticalLayoutTab2">
         <item>
          <widget class="QPushButton" name="pushButtonAddTask">
-          <property name="text">
-           <string>Добавить задачу</string>
-          </property>
+          <property name="text"><string>Добавить задачу</string></property>
          </widget>
         </item>
         <item>
          <widget class="QScrollArea" name="scrollAreaTasks">
-          <property name="widgetResizable">
-           <bool>true</bool>
-          </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAsNeeded</enum>
-          </property>
-          <property name="verticalScrollBarPolicy">
-           <enum>Qt::ScrollBarAsNeeded</enum>
-          </property>
+          <property name="widgetResizable"><bool>true</bool></property>
+          <property name="horizontalScrollBarPolicy"><enum>Qt::ScrollBarAsNeeded</enum></property>
+          <property name="verticalScrollBarPolicy"><enum>Qt::ScrollBarAsNeeded</enum></property>
           <widget class="QWidget" name="scrollAreaWidgetContents">
            <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>780</width>
-             <height>400</height>
-            </rect>
+            <rect><x>0</x><y>0</y><width>780</width><height>400</height></rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayoutScroll">
-            <property name="spacing">
-             <number>6</number>
-            </property>
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
+            <property name="spacing"><number>6</number></property>
+            <property name="leftMargin"><number>0</number></property>
+            <property name="topMargin"><number>0</number></property>
+            <property name="rightMargin"><number>0</number></property>
+            <property name="bottomMargin"><number>0</number></property>
            </layout>
           </widget>
          </widget>
