@@ -33,6 +33,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QString prevHotkey;
+    bool hotkeyCaptured;
     void loadConfig();
     void saveConfig();
     QString configFilePath() const;

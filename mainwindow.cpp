@@ -25,10 +25,10 @@ public:
     static int modState;
 
     static LRESULT CALLBACK hookProc(int nCode, WPARAM wParam, LPARAM lParam) {
-        if (nCode < 0) 
+        if (nCode < 0)
             return CallNextHookEx(hookHandle, nCode, wParam, lParam);
 
-        KBDLLHOOKSTRUCT* kb = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
+        auto kb = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
 
         if (!capturing)
             return CallNextHookEx(hookHandle, nCode, wParam, lParam);
@@ -60,12 +60,14 @@ public:
                         seq += QString::number(vk);
                     }
 
-                    QMetaObject::invokeMethod(
-                        MainWindow::instance,
-                        "setHotkeyText",
-                        Qt::QueuedConnection,
-                        Q_ARG(QString, seq)
-                    );
+                    if (MainWindow::instance) {
+                        QMetaObject::invokeMethod(
+                            MainWindow::instance,
+                            "setHotkeyText",
+                            Qt::QueuedConnection,
+                            Q_ARG(QString, seq)
+                        );
+                    }
                     modState = 0;
                     return 1;
                 }
@@ -113,6 +115,7 @@ int GlobalKeyInterceptor::modState = 0;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , hotkeyCaptured(false)
 {
     instance = this;
     ui->setupUi(this);
@@ -142,11 +145,15 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* ev)
 #ifdef Q_OS_WIN
     if (obj == ui->lineEditHotkey) {
         if (ev->type() == QEvent::FocusIn) {
+            prevHotkey = ui->lineEditHotkey->text();
+            hotkeyCaptured = false;
             GlobalKeyInterceptor::capturing = true;
             GlobalKeyInterceptor::start();
             ui->lineEditHotkey->clear();
         } else if (ev->type() == QEvent::FocusOut) {
             GlobalKeyInterceptor::capturing = false;
+            if (!hotkeyCaptured)
+                ui->lineEditHotkey->setText(prevHotkey);
         }
     }
 #endif
@@ -156,6 +163,7 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* ev)
 void MainWindow::setHotkeyText(const QString &text)
 {
     ui->lineEditHotkey->setText(text);
+    hotkeyCaptured = true;
     saveConfig();
 }
 
