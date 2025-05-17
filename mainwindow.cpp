@@ -318,7 +318,7 @@ QList<TaskWidget*> MainWindow::currentTasks() const
     return list;
 }
 
-void MainWindow::simulateCtrlX() const
+void MainWindow::simulateCtrlC() const
 {
 #ifdef Q_OS_WIN
     INPUT inputs[4] = {};
@@ -327,10 +327,10 @@ void MainWindow::simulateCtrlX() const
     inputs[0].ki.wVk      = VK_CONTROL;
 
     inputs[1].type        = INPUT_KEYBOARD;
-    inputs[1].ki.wVk      = 'X';
+    inputs[1].ki.wVk      = 'C';
 
     inputs[2].type        = INPUT_KEYBOARD;
-    inputs[2].ki.wVk      = 'X';
+    inputs[2].ki.wVk      = 'C';
     inputs[2].ki.dwFlags  = KEYEVENTF_KEYUP;
 
     inputs[3].type        = INPUT_KEYBOARD;
@@ -343,6 +343,6 @@ void MainWindow::simulateCtrlX() const
 
 void MainWindow::handleGlobalHotkey()
 {
-    simulateCtrlX();
+    simulateCtrlC();
     new TaskWindow(currentTasks());
 }

@@ -47,7 +47,7 @@ private:
     QString configFilePath() const;
 
     QList<TaskWidget*> currentTasks() const;
-    void simulateCtrlX() const;
+    void simulateCtrlC() const;
 };
 
 #endif // MAINWINDOW_H
