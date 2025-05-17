@@ -7,26 +7,121 @@
 #include <QJsonArray>
 #include <QCoreApplication>
 #include <QDir>
-#include <QKeySequenceEdit>
+#include <QLineEdit>
+#include <QMetaObject>
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
+MainWindow* MainWindow::instance = nullptr;
+
+#ifdef Q_OS_WIN
+class GlobalKeyInterceptor {
+public:
+    static bool capturing;
+    static HHOOK hookHandle;
+
+    static LRESULT CALLBACK hookProc(int nCode, WPARAM wParam, LPARAM lParam) {
+        if (nCode >= 0 && capturing && wParam == WM_KEYDOWN) {
+            auto kb = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
+            int vk = kb->vkCode;
+            QString seq;
+            if (GetAsyncKeyState(VK_CONTROL) & 0x8000) seq += "Ctrl+";
+            if (GetAsyncKeyState(VK_MENU) & 0x8000)    seq += "Alt+";
+            if (GetAsyncKeyState(VK_SHIFT) & 0x8000)   seq += "Shift+";
+            if ((GetAsyncKeyState(VK_LWIN) | GetAsyncKeyState(VK_RWIN)) & 0x8000)
+                seq += "Win+";
+
+            wchar_t name[64] = {0};
+            if (GetKeyNameTextW(MapVirtualKeyW(vk, MAPVK_VK_TO_VSC) << 16, name, 64) > 0) {
+                seq += QString::fromWCharArray(name);
+            } else {
+                seq += QString::number(vk);
+            }
+
+            if (MainWindow::instance) {
+                QMetaObject::invokeMethod(
+                    MainWindow::instance,
+                    "setHotkeyText",
+                    Qt::QueuedConnection,
+                    Q_ARG(QString, seq)
+                );
+            }
+            return 1;
+        }
+        return CallNextHookEx(hookHandle, nCode, wParam, lParam);
+    }
+
+    static void start() {
+        if (!hookHandle) {
+            hookHandle = SetWindowsHookExW(
+                WH_KEYBOARD_LL,
+                hookProc,
+                GetModuleHandleW(NULL),
+                0
+            );
+        }
+    }
+    static void stop() {
+        if (hookHandle) {
+            UnhookWindowsHookEx(hookHandle);
+            hookHandle = nullptr;
+        }
+    }
+};
+
+bool GlobalKeyInterceptor::capturing = false;
+HHOOK GlobalKeyInterceptor::hookHandle = nullptr;
+#endif
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    instance = this;
     ui->setupUi(this);
 
     connect(ui->lineEditApiEndpoint, &QLineEdit::textChanged, this, &MainWindow::saveConfig);
-    connect(ui->lineEditModelName, &QLineEdit::textChanged, this, &MainWindow::saveConfig);
-    connect(ui->lineEditApiKey, &QLineEdit::textChanged, this, &MainWindow::saveConfig);
-    connect(ui->lineEditProxy, &QLineEdit::textChanged, this, &MainWindow::saveConfig);
-    connect(ui->keySequenceEditHotkey, &QKeySequenceEdit::keySequenceChanged, this, &MainWindow::saveConfig);
+    connect(ui->lineEditModelName,   &QLineEdit::textChanged, this, &MainWindow::saveConfig);
+    connect(ui->lineEditApiKey,      &QLineEdit::textChanged, this, &MainWindow::saveConfig);
+    connect(ui->lineEditProxy,       &QLineEdit::textChanged, this, &MainWindow::saveConfig);
+    connect(ui->lineEditHotkey,      &QLineEdit::textChanged, this, &MainWindow::saveConfig);
+
+    ui->lineEditHotkey->installEventFilter(this);
 
     loadConfig();
 }
 
 MainWindow::~MainWindow()
 {
+#ifdef Q_OS_WIN
+    GlobalKeyInterceptor::stop();
+#endif
     delete ui;
+    instance = nullptr;
+}
+
+bool MainWindow::eventFilter(QObject* obj, QEvent* ev)
+{
+#ifdef Q_OS_WIN
+    if (obj == ui->lineEditHotkey) {
+        if (ev->type() == QEvent::FocusIn) {
+            GlobalKeyInterceptor::capturing = true;
+            GlobalKeyInterceptor::start();
+            ui->lineEditHotkey->clear();
+        } else if (ev->type() == QEvent::FocusOut) {
+            GlobalKeyInterceptor::capturing = false;
+        }
+    }
+#endif
+    return QMainWindow::eventFilter(obj, ev);
+}
+
+void MainWindow::setHotkeyText(const QString &text)
+{
+    ui->lineEditHotkey->setText(text);
+    saveConfig();
 }
 
 QString MainWindow::configFilePath() const
@@ -57,9 +152,7 @@ void MainWindow::loadConfig()
     ui->lineEditModelName->setText(settings.value("modelName").toString());
     ui->lineEditApiKey->setText(settings.value("apiKey").toString());
     ui->lineEditProxy->setText(settings.value("proxy").toString());
-    ui->keySequenceEditHotkey->setKeySequence(
-        QKeySequence::fromString(settings.value("hotkey").toString())
-    );
+    ui->lineEditHotkey->setText(settings.value("hotkey").toString());
 
     QJsonArray tasks = root.value("tasks").toArray();
     for (const QJsonValue &value : tasks) {
@@ -70,11 +163,10 @@ void MainWindow::loadConfig()
         task->setInsertMode(obj.value("insert").toBool(true));
 
         connect(task, &TaskWidget::removeRequested, this, &MainWindow::removeTaskWidget);
-        connect(task, &TaskWidget::configChanged, this, &MainWindow::saveConfig);
+        connect(task, &TaskWidget::configChanged,    this, &MainWindow::saveConfig);
 
-        int index = ui->tasksTabWidget->addTab(task,
+        ui->tasksTabWidget->addTab(task,
             tr("Задача %1").arg(ui->tasksTabWidget->count() + 1));
-        Q_UNUSED(index);
     }
 }
 
@@ -86,7 +178,7 @@ void MainWindow::saveConfig()
     settings["modelName"]   = ui->lineEditModelName->text();
     settings["apiKey"]      = ui->lineEditApiKey->text();
     settings["proxy"]       = ui->lineEditProxy->text();
-    settings["hotkey"]      = ui->keySequenceEditHotkey->keySequence().toString();
+    settings["hotkey"]      = ui->lineEditHotkey->text();
     root["settings"] = settings;
 
     QJsonArray tasksArray;

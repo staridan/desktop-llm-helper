@@ -39,7 +39,7 @@ else()
     endif()
 endif()
 
-target_link_libraries(TextHelper PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(TextHelper PRIVATE Qt${QT_VERSION_MAJOR}::Widgets user32)
 
 if(${QT_VERSION} VERSION_LESS 6.1.0)
   set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.TextHelper)

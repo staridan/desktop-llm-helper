@@ -3,10 +3,11 @@
 
 #include <QMainWindow>
 #include <QString>
+#include <QEvent>
 
-namespace Ui {
-class MainWindow;
-}
+QT_BEGIN_NAMESPACE
+namespace Ui { class MainWindow; }
+QT_END_NAMESPACE
 
 class TaskWidget;
 
@@ -17,6 +18,14 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    static MainWindow* instance;
+
+public slots:
+    void setHotkeyText(const QString &text);
+
+protected:
+    bool eventFilter(QObject* obj, QEvent* event) override;
 
 private slots:
     void on_pushButtonAddTask_clicked();
