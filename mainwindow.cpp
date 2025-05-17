@@ -12,6 +12,7 @@
 #include <QDir>
 #include <QLineEdit>
 #include <QMetaObject>
+#include <QStandardPaths>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -187,9 +188,11 @@ void MainWindow::setHotkeyText(const QString &text)
 
 QString MainWindow::configFilePath() const
 {
-    return QCoreApplication::applicationDirPath()
-         + QDir::separator()
-         + "config.json";
+    // Используем постоянный каталог пользователя
+    const QString baseDir = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    const QString dirPath = baseDir + QDir::separator() + QCoreApplication::applicationName();
+    QDir().mkpath(dirPath);                   // гарантируем существование
+    return dirPath + QDir::separator() + "config.json";
 }
 
 void MainWindow::loadConfig()
@@ -260,7 +263,7 @@ void MainWindow::saveConfig()
 
     const QJsonDocument doc(root);
     QFile file(configFilePath());
-    if (file.open(QIODevice::WriteOnly)) {
+    if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         file.write(doc.toJson());
         file.close();
     }
