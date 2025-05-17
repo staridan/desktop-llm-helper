@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QEvent>
 #include "taskwidget.h"
 
 QT_BEGIN_NAMESPACE
@@ -24,6 +25,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    void adjustScrollPadding();
+
+protected:
+    bool eventFilter(QObject* obj, QEvent* event) override;
 };
 
 #endif // MAINWINDOW_H

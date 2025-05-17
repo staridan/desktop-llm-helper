@@ -15,15 +15,27 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="leftMargin"><number>4</number></property>
-    <property name="topMargin"><number>4</number></property>
-    <property name="rightMargin"><number>4</number></property>
-    <property name="bottomMargin"><number>4</number></property>
+    <property name="leftMargin">
+     <number>4</number>
+    </property>
+    <property name="topMargin">
+     <number>4</number>
+    </property>
+    <property name="rightMargin">
+     <number>4</number>
+    </property>
+    <property name="bottomMargin">
+     <number>4</number>
+    </property>
     <item>
      <widget class="QTabWidget" name="tabWidget">
-      <property name="currentIndex"><number>0</number></property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
       <widget class="QWidget" name="tab">
-       <attribute name="title"><string>Основные настройки</string></attribute>
+       <attribute name="title">
+        <string>Основные настройки</string>
+       </attribute>
        <layout class="QFormLayout" name="formLayoutSettings">
         <property name="labelAlignment">
          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
@@ -31,11 +43,17 @@
         <property name="formAlignment">
          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
         </property>
-        <property name="horizontalSpacing"><number>6</number></property>
-        <property name="verticalSpacing"><number>6</number></property>
+        <property name="horizontalSpacing">
+         <number>6</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>6</number>
+        </property>
         <item row="0" column="0">
          <widget class="QLabel" name="labelApiEndpoint">
-          <property name="text"><string>Адрес API эндпоинта</string></property>
+          <property name="text">
+           <string>Адрес API эндпоинта</string>
+          </property>
          </widget>
         </item>
         <item row="0" column="1">
@@ -43,7 +61,9 @@
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="labelModelName">
-          <property name="text"><string>Название модели</string></property>
+          <property name="text">
+           <string>Название модели</string>
+          </property>
          </widget>
         </item>
         <item row="1" column="1">
@@ -51,7 +71,9 @@
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="labelApiKey">
-          <property name="text"><string>API ключ</string></property>
+          <property name="text">
+           <string>API ключ</string>
+          </property>
          </widget>
         </item>
         <item row="2" column="1">
@@ -59,7 +81,9 @@
         </item>
         <item row="3" column="0">
          <widget class="QLabel" name="labelProxy">
-          <property name="text"><string>Прокси</string></property>
+          <property name="text">
+           <string>Прокси</string>
+          </property>
          </widget>
         </item>
         <item row="3" column="1">
@@ -67,7 +91,9 @@
         </item>
         <item row="4" column="0">
          <widget class="QLabel" name="labelHotkey">
-          <property name="text"><string>Хоткей для вызова меню</string></property>
+          <property name="text">
+           <string>Хоткей для вызова меню</string>
+          </property>
          </widget>
         </item>
         <item row="4" column="1">
@@ -77,7 +103,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="pushButtonScan">
-            <property name="text"><string>Сканировать</string></property>
+            <property name="text">
+             <string>Сканировать</string>
+            </property>
            </widget>
           </item>
          </layout>
@@ -85,28 +113,56 @@
        </layout>
       </widget>
       <widget class="QWidget" name="tab_2">
-       <attribute name="title"><string>Задачи</string></attribute>
+       <attribute name="title">
+        <string>Задачи</string>
+       </attribute>
        <layout class="QVBoxLayout" name="verticalLayoutTab2">
         <item>
          <widget class="QPushButton" name="pushButtonAddTask">
-          <property name="text"><string>Добавить задачу</string></property>
+          <property name="text">
+           <string>Добавить задачу</string>
+          </property>
          </widget>
         </item>
         <item>
          <widget class="QScrollArea" name="scrollAreaTasks">
-          <property name="widgetResizable"><bool>true</bool></property>
-          <property name="horizontalScrollBarPolicy"><enum>Qt::ScrollBarAsNeeded</enum></property>
-          <property name="verticalScrollBarPolicy"><enum>Qt::ScrollBarAsNeeded</enum></property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
           <widget class="QWidget" name="scrollAreaWidgetContents">
            <property name="geometry">
-            <rect><x>0</x><y>0</y><width>780</width><height>400</height></rect>
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>766</width>
+             <height>515</height>
+            </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayoutScroll">
-            <property name="spacing"><number>10</number></property>
-            <property name="leftMargin"><number>10</number></property>
-            <property name="topMargin"><number>10</number></property>
-            <property name="rightMargin"><number>10</number></property>
-            <property name="bottomMargin"><number>10</number></property>
+            <property name="spacing">
+             <number>10</number>
+            </property>
+            <property name="leftMargin">
+             <number>10</number>
+            </property>
+            <property name="topMargin">
+             <number>10</number>
+            </property>
+            <property name="rightMargin">
+             <number>10</number>
+            </property>
+            <property name="bottomMargin">
+             <number>10</number>
+            </property>
             <property name="alignment"><set>Qt::AlignTop</set></property>
            </layout>
           </widget>
