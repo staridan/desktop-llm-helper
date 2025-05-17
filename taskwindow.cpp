@@ -4,6 +4,9 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QKeyEvent>
+#include <QCursor>
+#include <QScreen>
+#include <QGuiApplication>
 
 TaskWindow::TaskWindow(const QList<TaskWidget*>& tasks, QWidget* parent)
     : QWidget(parent,
@@ -33,6 +36,30 @@ TaskWindow::TaskWindow(const QList<TaskWidget*>& tasks, QWidget* parent)
 
     setLayout(layout);
     adjustSize();
+
+    QPoint cursorPos = QCursor::pos();
+    QScreen* screen = QGuiApplication::screenAt(cursorPos);
+    if (!screen) {
+        screen = QGuiApplication::primaryScreen();
+    }
+    QRect available = screen->availableGeometry();
+    int x = cursorPos.x();
+    int y = cursorPos.y();
+    int w = width();
+    int h = height();
+    if (x + w > available.x() + available.width()) {
+        x = available.x() + available.width() - w;
+    }
+    if (y + h > available.y() + available.height()) {
+        y = available.y() + available.height() - h;
+    }
+    if (x < available.x()) {
+        x = available.x();
+    }
+    if (y < available.y()) {
+        y = available.y();
+    }
+    move(x, y);
 
     show();
     raise();
