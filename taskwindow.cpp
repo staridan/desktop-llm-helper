@@ -12,10 +12,12 @@ TaskWindow::TaskWindow(const QList<TaskWidget*>& tasks, QWidget* parent)
               | Qt::CustomizeWindowHint
               | Qt::WindowTitleHint)
 {
-    setWindowTitle(tr("Выберите задачу"));
     setAttribute(Qt::WA_DeleteOnClose, true);
+    setMinimumWidth(400);
 
     auto* layout = new QVBoxLayout(this);
+    layout->setContentsMargins(4, 4, 4, 4);
+    layout->setSpacing(4);
 
     for (TaskWidget* task : tasks) {
         if (!task) continue;
@@ -28,8 +30,8 @@ TaskWindow::TaskWindow(const QList<TaskWidget*>& tasks, QWidget* parent)
         });
         layout->addWidget(btn);
     }
+
     setLayout(layout);
-    layout->setContentsMargins(12, 12, 12, 12);
     adjustSize();
 
     show();
