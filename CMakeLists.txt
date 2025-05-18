@@ -13,22 +13,25 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network)
 
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-        taskwidget.cpp
-        taskwidget.h
-        taskwidget.ui
-        hotkeymanager.cpp
-        hotkeymanager.h
-        taskwindow.cpp
-        taskwindow.h
+    main.cpp
+    mainwindow.cpp
+    mainwindow.h
+    mainwindow.ui
+    taskwidget.cpp
+    taskwidget.h
+    taskwidget.ui
+    hotkeymanager.cpp
+    hotkeymanager.h
+    taskwindow.cpp
+    taskwindow.h
 )
 
+# ресурс Windows-иконки
+set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/resources/app.rc")
+# Qt-ресурсы
+set(main_resources "${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.qrc")
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/resources/app.rc")
-    set(main_resources "${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.qrc")
     qt_add_executable(TextHelper
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
@@ -39,10 +42,12 @@ else()
     if(ANDROID)
         add_library(TextHelper SHARED
             ${PROJECT_SOURCES}
+            ${main_resources}
         )
     else()
         add_executable(TextHelper
             ${PROJECT_SOURCES}
+            ${main_resources}
         )
     endif()
 endif()

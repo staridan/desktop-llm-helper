@@ -6,15 +6,12 @@
 #include <QEvent>
 #include <QList>
 #include <QSystemTrayIcon>
+#include <QCloseEvent>
 
 #include "hotkeymanager.h"
 
 QT_BEGIN_NAMESPACE
-
-namespace Ui {
-    class MainWindow;
-}
-
+namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 class TaskWidget;
@@ -24,23 +21,21 @@ class MainWindow : public QMainWindow {
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-
     ~MainWindow();
 
     static MainWindow *instance;
 
 public slots:
     void setHotkeyText(const QString &text);
-
     void handleGlobalHotkey();
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void on_pushButtonAddTask_clicked();
     void onTrayIconActivated(QSystemTrayIcon::ActivationReason reason);
-
     void removeTaskWidget(TaskWidget *task);
 
 private:
@@ -52,13 +47,9 @@ private:
     QSystemTrayIcon *trayIcon;
 
     void createTrayIcon();
-
     void loadConfig();
-
     void saveConfig();
-
     QString configFilePath() const;
-
     QList<TaskWidget *> currentTasks() const;
 };
 
