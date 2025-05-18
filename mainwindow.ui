@@ -65,22 +65,25 @@
         <item row="3" column="1">
          <widget class="QLineEdit" name="lineEditProxy"/>
         </item>
+
         <item row="4" column="0">
-         <widget class="QLabel" name="labelHotkey">
-          <property name="text"><string>Хоткей для вызова меню</string></property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QLineEdit" name="lineEditHotkey"/>
-        </item>
-        <item row="5" column="0">
          <widget class="QLabel" name="labelMaxChars">
           <property name="text"><string>Лимит символов в запросах</string></property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="4" column="1">
          <widget class="QLineEdit" name="lineEditMaxChars"/>
         </item>
+
+        <item row="5" column="0">
+         <widget class="QLabel" name="labelHotkey">
+          <property name="text"><string>Хоткей для вызова меню</string></property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLineEdit" name="lineEditHotkey"/>
+        </item>
+
        </layout>
       </widget>
       <widget class="QWidget" name="tab_2">

@@ -34,33 +34,12 @@
    <item>
     <widget class="QTextEdit" name="textEditPrompt"/>
    </item>
+
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayoutOptions">
+    <layout class="QHBoxLayout" name="horizontalLayoutParams">
      <property name="alignment">
       <set>Qt::AlignLeft</set>
      </property>
-     <item>
-      <widget class="QRadioButton" name="radioInsert">
-       <property name="text">
-        <string>Вставить ответ</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="radioWindow">
-       <property name="text">
-        <string>Вывести ответ в окне</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <!-- Новые параметры -->
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayoutParams">
      <property name="spacing"><number>6</number></property>
      <item>
       <widget class="QLabel" name="labelMaxTokens">
@@ -90,6 +69,33 @@
      </item>
     </layout>
    </item>
+
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayoutOptions">
+     <property name="alignment">
+      <set>Qt::AlignLeft</set>
+     </property>
+     <item>
+      <widget class="QRadioButton" name="radioInsert">
+       <property name="text">
+        <string>Вставить ответ</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioWindow">
+       <property name="text">
+        <string>Вывести ответ в окне</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+
   </layout>
  </widget>
  <resources/>
