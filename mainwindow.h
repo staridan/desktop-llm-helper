@@ -5,6 +5,7 @@
 #include <QString>
 #include <QEvent>
 #include <QList>
+#include <QSystemTrayIcon>
 
 #include "hotkeymanager.h"
 
@@ -38,6 +39,7 @@ protected:
 
 private slots:
     void on_pushButtonAddTask_clicked();
+    void onTrayIconActivated(QSystemTrayIcon::ActivationReason reason);
 
     void removeTaskWidget(TaskWidget *task);
 
@@ -47,6 +49,9 @@ private:
     bool hotkeyCaptured;
     HotkeyManager *hotkeyManager;
     bool loadingConfig;
+    QSystemTrayIcon *trayIcon;
+
+    void createTrayIcon();
 
     void loadConfig();
 

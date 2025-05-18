@@ -4,6 +4,7 @@
 #include "taskwindow.h"
 #include "hotkeymanager.h"
 #include <QFile>
+#include <QMenu>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -162,6 +163,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->lineEditMaxChars, &QLineEdit::textChanged, this, &MainWindow::saveConfig);
 
     ui->lineEditHotkey->installEventFilter(this);
+
+    createTrayIcon();
 
 #ifdef Q_OS_WIN
     connect(hotkeyManager, &HotkeyManager::hotkeyPressed,
@@ -336,6 +339,37 @@ void MainWindow::removeTaskWidget(TaskWidget *task) {
         page->deleteLater();
         saveConfig();
     }
+}
+
+void MainWindow::onTrayIconActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    if(reason == QSystemTrayIcon::DoubleClick) {
+        this->showNormal();
+        this->raise();
+        this->activateWindow();
+    }
+}
+
+void MainWindow::createTrayIcon()
+{
+    QMenu *trayMenu = new QMenu(this);
+    QAction *restoreAction = new QAction(tr("Настройки"), this);
+    connect(restoreAction, &QAction::triggered, this, [=](){
+        this->showNormal();
+        this->raise();
+        this->activateWindow();
+    });
+    QAction *quitAction = new QAction(tr("Выйти"), this);
+    connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
+
+    trayMenu->addAction(restoreAction);
+    trayMenu->addAction(quitAction);
+
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setIcon(QIcon(":/icons/app.png"));
+    trayIcon->setContextMenu(trayMenu);
+    connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::onTrayIconActivated);
+    trayIcon->show();
 }
 
 QList<TaskWidget *> MainWindow::currentTasks() const {
