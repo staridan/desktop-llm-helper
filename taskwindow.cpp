@@ -118,11 +118,15 @@ TaskWindow::TaskWindow(const QList<TaskWidget *> &tasks, QWidget *parent)
             request.setRawHeader("Authorization",
                                  "Bearer " + apiKey.toUtf8());
 
-            QJsonObject message;
-            message["role"] = "user";
-            message["content"] = combined;
+            QJsonObject systemMessage;
+            systemMessage["role"] = "system";
+            systemMessage["content"] = prompt;
+            QJsonObject userMessage;
+            userMessage["role"] = "user";
+            userMessage["content"] = original;
             QJsonArray messagesArray;
-            messagesArray.append(message);
+            messagesArray.append(systemMessage);
+            messagesArray.append(userMessage);
             QJsonObject body;
             body["model"] = modelName;
             body["messages"] = messagesArray;
@@ -177,7 +181,6 @@ TaskWindow::TaskWindow(const QList<TaskWidget *> &tasks, QWidget *parent)
                             respWin->setWindowTitle(tr("Ответ LLM"));
                             respWin->resize(600, 400);
 
-                            // позиция около курсора
                             QPoint cursorPos = QCursor::pos();
                             QScreen *screen = QGuiApplication::screenAt(cursorPos);
                             if (!screen)
