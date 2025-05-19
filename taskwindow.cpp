@@ -38,6 +38,9 @@ TaskWindow::TaskWindow(const QList<TaskWidget *> &tasks, QWidget *parent)
               | Qt::FramelessWindowHint)
     , loadingWindow(nullptr)
     , loadingTimer(nullptr)
+    , loadingLabel(nullptr)
+    , animationTimer(nullptr)
+    , dotCount(0)
 {
     setAttribute(Qt::WA_DeleteOnClose, true);
     setAttribute(Qt::WA_TranslucentBackground, true);
@@ -262,7 +265,7 @@ TaskWindow::TaskWindow(const QList<TaskWidget *> &tasks, QWidget *parent)
                             "QPushButton:hover { "
                             "   background-color: #e81123; "
                             "   color: #FFFFFF; "
-                            "}");
+                            "}"); 
     int xBtn = width() - mainLayout->contentsMargins().right() - btnSize/2;
     int yBtn = mainLayout->contentsMargins().top() - btnSize/2;
     closeBtn->move(xBtn, yBtn);
@@ -302,21 +305,34 @@ TaskWindow::TaskWindow(const QList<TaskWidget *> &tasks, QWidget *parent)
 void TaskWindow::showLoadingIndicator() {
     if (loadingWindow)
         return;
-    loadingWindow = new QWidget(nullptr, Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    loadingWindow = new QWidget(nullptr,
+        Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     loadingWindow->setAttribute(Qt::WA_ShowWithoutActivating);
     loadingWindow->setAttribute(Qt::WA_TransparentForMouseEvents);
     loadingWindow->setFocusPolicy(Qt::NoFocus);
+
     QLabel *label = new QLabel(tr("Ожидание"), loadingWindow);
+    loadingLabel = label;
+    dotCount = 0;
+
     QVBoxLayout *lay = new QVBoxLayout(loadingWindow);
     lay->setContentsMargins(5, 5, 5, 5);
     lay->addWidget(label);
     loadingWindow->setLayout(lay);
+
     loadingWindow->adjustSize();
     updateLoadingPosition();
     loadingWindow->show();
+
     loadingTimer = new QTimer(this);
-    connect(loadingTimer, &QTimer::timeout, this, &TaskWindow::updateLoadingPosition);
+    connect(loadingTimer, &QTimer::timeout,
+            this, &TaskWindow::updateLoadingPosition);
     loadingTimer->start(16);
+
+    animationTimer = new QTimer(this);
+    connect(animationTimer, &QTimer::timeout,
+            this, &TaskWindow::animateLoadingText);
+    animationTimer->start(500);
 }
 
 void TaskWindow::hideLoadingIndicator() {
@@ -325,10 +341,16 @@ void TaskWindow::hideLoadingIndicator() {
         loadingTimer->deleteLater();
         loadingTimer = nullptr;
     }
+    if (animationTimer) {
+        animationTimer->stop();
+        animationTimer->deleteLater();
+        animationTimer = nullptr;
+    }
     if (loadingWindow) {
         loadingWindow->close();
         loadingWindow->deleteLater();
         loadingWindow = nullptr;
+        loadingLabel = nullptr;
     }
 }
 
@@ -337,6 +359,17 @@ void TaskWindow::updateLoadingPosition() {
         return;
     QPoint pos = QCursor::pos();
     loadingWindow->move(pos.x() + 10, pos.y() + 10);
+}
+
+void TaskWindow::animateLoadingText() {
+    if (!loadingLabel)
+        return;
+    dotCount = (dotCount + 1) % 4;
+    loadingLabel->setText(tr("Ожидание") + QString(dotCount, '.'));
+    if (loadingWindow) {
+        loadingWindow->adjustSize();
+        updateLoadingPosition();
+    }
 }
 
 void TaskWindow::changeEvent(QEvent *event) {

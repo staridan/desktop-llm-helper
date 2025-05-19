@@ -6,6 +6,7 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include <QTimer>
+#include <QLabel>
 
 class TaskWidget;
 
@@ -21,10 +22,14 @@ protected:
 
 private slots:
     void updateLoadingPosition();
+    void animateLoadingText();
 
 private:
     QWidget *loadingWindow;
     QTimer *loadingTimer;
+    QLabel *loadingLabel;
+    QTimer *animationTimer;
+    int dotCount;
 
     void showLoadingIndicator();
     void hideLoadingIndicator();
