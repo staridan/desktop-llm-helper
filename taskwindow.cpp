@@ -276,16 +276,16 @@ TaskWindow::TaskWindow(const QList<TaskWidget *> &tasks, QWidget *parent)
     auto *closeBtn = new QPushButton(QString::fromUtf8("×"), this);
     closeBtn->setFixedSize(btnSize, btnSize);
     closeBtn->setFlat(true);
-    closeBtn->setCursor(Qt::PointingHandCursor);
     closeBtn->setStyleSheet("QPushButton { "
                             "   background-color: #FFFFFF; "
                             "   border: 1px solid #BBBBBB; "
                             "   border-radius: 8px; "
                             "   padding-bottom: 2px; "
                             "} "
-                            "QPushButton:hover { "
+                            "QPushButton:hover, QPushButton:focus { "
                             "   background-color: #e81123; "
                             "   color: #FFFFFF; "
+                            "   outline: 0; "
                             "}");
     int xBtn = width() - mainLayout->contentsMargins().right() - btnSize / 2;
     int yBtn = mainLayout->contentsMargins().top() - btnSize / 2;
