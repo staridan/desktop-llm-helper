@@ -10,6 +10,8 @@ if "%PROJECT_ROOT:~-1%"=="\" set "PROJECT_ROOT=%PROJECT_ROOT:~0,-1%"
 set "BUILD_DIR=%PROJECT_ROOT%\build"
 set "DEPLOY_DIR=%BUILD_DIR%\deploy"
 set "INSTALLER_DIR=%PROJECT_ROOT%\installer-output"
+:: Clean build directory before starting
+if exist "%BUILD_DIR%" rd /s /q "%BUILD_DIR%"
 
 :: Paths to Qt (MinGW build) and Qt Installer Framework
 set "QT_DIR=C:\Qt\6.8.1\mingw_64"
@@ -60,7 +62,7 @@ mkdir "%DEPLOY_DIR%"
 copy /Y "%BUILD_DIR%\DesktopLLMHelper.exe" "%DEPLOY_DIR%\DesktopLLMHelper.exe"
 
 :: Run windeployqt to gather Qt DLLs and plugins
-"%QT_DIR%\bin\windeployqt.exe" --release "%BUILD_DIR%\DesktopLLMHelper.exe" --dir "%DEPLOY_DIR%"
+"%QT_DIR%\bin\windeployqt.exe" --release --no-translations --no-opengl-sw "%BUILD_DIR%\DesktopLLMHelper.exe" --dir "%DEPLOY_DIR%"
 if errorlevel 1 (
     echo [Error] windeployqt failed. Check QT_DIR path.
     pause
@@ -69,7 +71,10 @@ if errorlevel 1 (
 
 :: Copy deployed files into installer package data folder
 echo Copying deployed files into installer package data folder...
-xcopy /E /Y "%DEPLOY_DIR%\*" "%PROJECT_ROOT%\installer\packages\com.desktopllmhelper\data\"
+if exist "%PROJECT_ROOT%\installer\packages\com.desktopllmhelper\data" rd /s /q "%PROJECT_ROOT%\installer\packages\com.desktopllmhelper\data"
+mkdir "%PROJECT_ROOT%\installer\packages\com.desktopllmhelper\data"
+xcopy /Y /E "%DEPLOY_DIR%\*" "%PROJECT_ROOT%\installer\packages\com.desktopllmhelper\data\"
+
 if errorlevel 1 (
     echo [Error] Failed to copy deploy files to installer package data folder.
     pause
