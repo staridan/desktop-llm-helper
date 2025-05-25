@@ -173,7 +173,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
             hotkeyCaptured = false;
             GlobalKeyInterceptor::capturing = true;
             GlobalKeyInterceptor::start();
-            ui->lineEditHotkey->clear();
         } else if (ev->type() == QEvent::FocusOut) {
             GlobalKeyInterceptor::capturing = false;
             if (!hotkeyCaptured)
