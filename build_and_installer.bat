@@ -55,9 +55,23 @@ popd
 :: Deploy Qt dependencies
 if exist "%DEPLOY_DIR%" rd /s /q "%DEPLOY_DIR%"
 mkdir "%DEPLOY_DIR%"
+
+:: Copy main executable into deploy folder
+copy /Y "%BUILD_DIR%\DesktopLLMHelper.exe" "%DEPLOY_DIR%\DesktopLLMHelper.exe"
+
+:: Run windeployqt to gather Qt DLLs and plugins
 "%QT_DIR%\bin\windeployqt.exe" --release "%BUILD_DIR%\DesktopLLMHelper.exe" --dir "%DEPLOY_DIR%"
 if errorlevel 1 (
     echo [Error] windeployqt failed. Check QT_DIR path.
+    pause
+    exit /b 1
+)
+
+:: Copy deployed files into installer package data folder
+echo Copying deployed files into installer package data folder...
+xcopy /E /Y "%DEPLOY_DIR%\*" "%PROJECT_ROOT%\installer\packages\com.desktopllmhelper\data\"
+if errorlevel 1 (
+    echo [Error] Failed to copy deploy files to installer package data folder.
     pause
     exit /b 1
 )

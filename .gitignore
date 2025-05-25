@@ -6,6 +6,8 @@ build/
 cmake-build*/
 installer-output
 
+installer/packages/com.desktopllmhelper/data
+
 # CMake generated files
 CMakeFiles/
 CMakeCache.txt
