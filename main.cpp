@@ -10,7 +10,7 @@
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
-    // Блокировка единственного экземпляра через QLockFile
+    // Ensure single instance using QLockFile
     QString tmpDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
     QDir().mkpath(tmpDir);
     QLockFile lockFile(tmpDir + QDir::separator() + "TextHelper.lock");
@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     if (!lockFile.tryLock()) {
         QMessageBox::warning(nullptr,
                              QObject::tr("TextHelper"),
-                             QObject::tr("Другая копия TextHelper уже запущена."));
+                             QObject::tr("Another instance of TextHelper is already running."));
         return 0;
     }
 

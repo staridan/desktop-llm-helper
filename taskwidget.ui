@@ -8,7 +8,7 @@
      <item>
       <widget class="QLabel" name="labelName">
        <property name="text">
-        <string>Название:</string>
+        <string>Name:</string>
        </property>
       </widget>
      </item>
@@ -18,7 +18,7 @@
      <item>
       <widget class="QPushButton" name="pushButtonDelete">
        <property name="text">
-        <string>Удалить задачу</string>
+        <string>Delete Task</string>
        </property>
       </widget>
      </item>
@@ -27,14 +27,13 @@
    <item>
     <widget class="QLabel" name="labelPrompt">
      <property name="text">
-      <string>Промпт:</string>
+      <string>Prompt:</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QTextEdit" name="textEditPrompt"/>
    </item>
-
    <item>
     <layout class="QHBoxLayout" name="horizontalLayoutParams">
      <property name="alignment">
@@ -43,7 +42,7 @@
      <property name="spacing"><number>6</number></property>
      <item>
       <widget class="QLabel" name="labelMaxTokens">
-       <property name="text"><string>Макс. токенов:</string></property>
+       <property name="text"><string>Max Tokens:</string></property>
       </widget>
      </item>
      <item>
@@ -55,7 +54,7 @@
      </item>
      <item>
       <widget class="QLabel" name="labelTemperature">
-       <property name="text"><string>Температура:</string></property>
+       <property name="text"><string>Temperature:</string></property>
       </widget>
      </item>
      <item>
@@ -69,7 +68,6 @@
      </item>
     </layout>
    </item>
-
    <item>
     <layout class="QHBoxLayout" name="horizontalLayoutOptions">
      <property name="alignment">
@@ -78,7 +76,7 @@
      <item>
       <widget class="QRadioButton" name="radioInsert">
        <property name="text">
-        <string>Вставить ответ</string>
+        <string>Insert Answer</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -88,14 +86,12 @@
      <item>
       <widget class="QRadioButton" name="radioWindow">
        <property name="text">
-        <string>Вывести ответ в окне</string>
+        <string>Show Answer in Window</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-
-
   </layout>
  </widget>
  <resources/>

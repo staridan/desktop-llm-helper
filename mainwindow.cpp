@@ -247,12 +247,12 @@ void MainWindow::loadConfig()
         connect(task, &TaskWidget::configChanged, this, [this, task]() {
             int idx = ui->tasksTabWidget->indexOf(task);
             if (idx != -1) {
-                QString label = task->name().isEmpty() ? tr("<Без имени>") : task->name();
+                QString label = task->name().isEmpty() ? tr("<Unnamed>") : task->name();
                 ui->tasksTabWidget->setTabText(idx, label);
             }
         });
 
-        QString tabLabel = task->name().isEmpty() ? tr("<Без имени>") : task->name();
+        QString tabLabel = task->name().isEmpty() ? tr("<Unnamed>") : task->name();
         ui->tasksTabWidget->addTab(task, tabLabel);
     }
 
@@ -310,12 +310,12 @@ void MainWindow::on_pushButtonAddTask_clicked()
     connect(task, &TaskWidget::configChanged,   this, [this, task]() {
         int idx = ui->tasksTabWidget->indexOf(task);
         if (idx != -1) {
-            QString lbl = task->name().isEmpty() ? tr("<Без имени>") : task->name();
+            QString lbl = task->name().isEmpty() ? tr("<Unnamed>") : task->name();
             ui->tasksTabWidget->setTabText(idx, lbl);
         }
     });
 
-    QString tabLabel = task->name().isEmpty() ? tr("<Без имени>") : task->name();
+    QString tabLabel = task->name().isEmpty() ? tr("<Unnamed>") : task->name();
     int index = ui->tasksTabWidget->addTab(task, tabLabel);
     ui->tasksTabWidget->setCurrentIndex(index);
 
@@ -351,8 +351,8 @@ void MainWindow::handleGlobalHotkey()
 void MainWindow::createTrayIcon()
 {
     QMenu *trayMenu = new QMenu(this);
-    QAction *restoreAction = trayMenu->addAction(tr("Настройки"));
-    QAction *quitAction    = trayMenu->addAction(tr("Выйти"));
+    QAction *restoreAction = trayMenu->addAction(tr("Settings"));
+    QAction *quitAction    = trayMenu->addAction(tr("Exit"));
 
     connect(restoreAction, &QAction::triggered, this, [this]() {
         showNormal();

@@ -72,7 +72,7 @@ TaskWindow::TaskWindow(const QList<TaskWidget *> &tasks, QWidget *parent)
     for (TaskWidget *task: tasks) {
         if (!task)
             continue;
-        QString text = task->name().isEmpty() ? tr("<Без имени>") : task->name();
+        QString text = task->name().isEmpty() ? tr("<Unnamed>") : task->name();
         auto *btn = new QPushButton(text, container);
         btn->setStyleSheet(
             "QPushButton {"
@@ -237,7 +237,7 @@ TaskWindow::TaskWindow(const QList<TaskWidget *> &tasks, QWidget *parent)
                             edit->setReadOnly(true);
                             lay->addWidget(edit);
 
-                            respWin->setWindowTitle(tr("Ответ LLM"));
+                            respWin->setWindowTitle(tr("LLM Response"));
                             respWin->resize(600, 200);
 
                             QPoint cursorPos = QCursor::pos();
@@ -343,7 +343,7 @@ void TaskWindow::showLoadingIndicator() {
     loadingWindow->setAttribute(Qt::WA_TransparentForMouseEvents);
     loadingWindow->setFocusPolicy(Qt::NoFocus);
 
-    QLabel *label = new QLabel(tr("Ожидание"), loadingWindow);
+    QLabel *label = new QLabel(tr("Loading"), loadingWindow);
     loadingLabel = label;
     dotCount = 0;
 
@@ -397,7 +397,7 @@ void TaskWindow::animateLoadingText() {
     if (!loadingLabel)
         return;
     dotCount = (dotCount + 1) % 4;
-    loadingLabel->setText(tr("Ожидание") + QString(dotCount, '.'));
+    loadingLabel->setText(tr("Loading") + QString(dotCount, '.'));
     if (loadingWindow) {
         loadingWindow->adjustSize();
         updateLoadingPosition();

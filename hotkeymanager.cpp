@@ -43,13 +43,13 @@ bool HotkeyManager::parseSequence(const QString &sequence,
             modifiers |= MOD_WIN;
         else {
             if (part.length() == 1) {
-                // одиночный символ
+                // single character
                 const wchar_t ch = part.at(0).toUpper().unicode();
                 const SHORT res = VkKeyScanW(ch);
                 if (res == -1) return false;
                 vk = LOBYTE(res);
             } else if (part.startsWith('F', Qt::CaseInsensitive)) {
-                // F1…F24
+                // function keys F1–F24
                 bool ok = false;
                 const int n = part.mid(1).toInt(&ok);
                 if (!ok || n < 1 || n > 24) return false;
@@ -75,7 +75,7 @@ bool HotkeyManager::registerHotkey(const QString &sequence) {
     currentModifiers = mods;
     currentVk = key;
 
-    // штатный RegisterHotKey НЕ используем: нужна полная блокировка
+    // do not use RegisterHotKey: we need full interception
     UnregisterHotKey(nullptr, id);
 
     if (!s_hook) {
@@ -88,7 +88,7 @@ bool HotkeyManager::registerHotkey(const QString &sequence) {
 bool HotkeyManager::nativeEventFilter(const QByteArray &,
                                       void *,
                                       qintptr *) {
-    // WM_HOTKEY не используется — хук работает на более низком уровне
+    // WM_HOTKEY is not used — hook works at a lower level
     return false;
 }
 
@@ -115,10 +115,10 @@ LRESULT CALLBACK HotkeyManager::LowLevelProc(int nCode,
 
             if (mods == s_instance->currentModifiers &&
                 vk == s_instance->currentVk) {
-                // Хоткей совпал — испускаем сигнал и блокируем клавишу
+                // hotkey matched — emit signal and block further processing
                 QMetaObject::invokeMethod(s_instance, "hotkeyPressed",
                                           Qt::QueuedConnection);
-                return 1; // ← дальнейшая доставка прерывается
+                return 1;
             }
         }
     }

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Настройки</string>
+   <string>Settings</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -34,7 +34,7 @@
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Основные настройки</string>
+        <string>General Settings</string>
        </attribute>
        <layout class="QFormLayout" name="formLayoutSettings">
         <property name="labelAlignment">
@@ -52,7 +52,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="labelApiEndpoint">
           <property name="text">
-           <string>Адрес API эндпоинта</string>
+           <string>API Endpoint URL</string>
           </property>
          </widget>
         </item>
@@ -62,7 +62,7 @@
         <item row="1" column="0">
          <widget class="QLabel" name="labelModelName">
           <property name="text">
-           <string>Название модели</string>
+           <string>Model Name</string>
           </property>
          </widget>
         </item>
@@ -72,7 +72,7 @@
         <item row="2" column="0">
          <widget class="QLabel" name="labelApiKey">
           <property name="text">
-           <string>API ключ</string>
+           <string>API Key</string>
           </property>
          </widget>
         </item>
@@ -82,7 +82,7 @@
         <item row="3" column="0">
          <widget class="QLabel" name="labelProxy">
           <property name="text">
-           <string>Прокси</string>
+           <string>Proxy</string>
           </property>
          </widget>
         </item>
@@ -92,7 +92,7 @@
         <item row="4" column="0">
          <widget class="QLabel" name="labelMaxChars">
           <property name="text">
-           <string>Лимит символов в запросах</string>
+           <string>Request Character Limit</string>
           </property>
          </widget>
         </item>
@@ -102,7 +102,7 @@
         <item row="5" column="0">
          <widget class="QLabel" name="labelHotkey">
           <property name="text">
-           <string>Хоткей для вызова меню</string>
+           <string>Menu Hotkey</string>
           </property>
          </widget>
         </item>
@@ -113,13 +113,13 @@
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
-        <string>Задачи</string>
+        <string>Tasks</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayoutTab2">
         <item>
          <widget class="QPushButton" name="pushButtonAddTask">
           <property name="text">
-           <string>Добавить задачу</string>
+           <string>Add Task</string>
           </property>
          </widget>
         </item>
