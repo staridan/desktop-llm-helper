@@ -1,6 +1,19 @@
 function Component()
 {
-    // empty constructor
+    installer.finishButtonClicked.connect(this, Component.prototype.launchApplication);
+}
+
+Component.prototype.launchApplication = function()
+{
+    try {
+        if (installer.isInstaller() && installer.status === QInstaller.Success) {
+            var targetDir = installer.value("TargetDir");
+            var exePath = installer.toNativeSeparators(targetDir + "/DesktopLLMHelper.exe");
+            installer.executeDetached(exePath, [], installer.toNativeSeparators(targetDir));
+        }
+    } catch(e) {
+        console.log("Failed to launch application: " + e);
+    }
 }
 
 Component.prototype.createOperations = function()
