@@ -1,27 +1,26 @@
 # Windows-LLM-Helper
 
-Приложение позволяет быстро обрабатывать любой выделенный текст с помощью заранее настроенных задач.
+The application allows you to quickly process any selected text using pre-configured tasks.
 
-Каждая задача содержит свой настраиваемый промпт для генерации результата. При выборе задачи программа автоматически копирует текущий выделенный текст, отправляет его вместе с промптом на указанный API-эндпоинт LLM и возвращает результат — либо вставляя его в текущее приложение, либо открывая отдельное окно с ответом.
+Each task has its own customizable prompt for generating results. When you select a task, the program automatically copies the currently selected text, sends it along with the prompt to the specified LLM API endpoint, and returns the result—either inserting it into the current application or opening a separate window with the response.
 
 ---
 
-**Основные возможности:**
-- Глобальный хоткей для вызова меню задач
-- Поддержка вставки ответа напрямую в текущее приложение или отображения в отдельном окне
-- Настраиваемые промпты, лимиты токенов и температура генерации
+**Key Features:**
+- Global hotkey to open the task menu
+- Support for inserting the response directly into the current application or displaying it in a separate window
+- Customizable prompts, token limits, and generation temperature
 
+## Screenshots
 
-## Скриншоты
-
-#### Меню выбора задачи для работы с выделенным текстом
+#### Task selection menu for working with selected text
 ![x](./additional/img-tasks.png)
 
-#### Основные настройки
+#### Main settings
 ![x](./additional/img-settings-main.png)
 
-#### Настройка задач
+#### Task configuration
 ![x](./additional/img-settings-tasks.png)
 
-#### Окно вывода результата
+#### Result output window
 ![x](./additional/img-result.png)
