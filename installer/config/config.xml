@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>DesktopLLMHelper</Name>
+    <Version>1.0.0</Version>
+    <Title>DesktopLLMHelper Setup</Title>
+    <Publisher>Your Company</Publisher>
+    <StartMenuDir>DesktopLLMHelper</StartMenuDir>
+    <!-- Install into the per-user Programs folder under LocalAppData -->
+    <TargetDir>@HomeDir@/AppData/Local/Programs/DesktopLLMHelper</TargetDir>
+    <RemoteRepositories>
+        <!-- Add repository URLs here if you host packages remotely -->
+    </RemoteRepositories>
+</Installer>

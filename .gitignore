@@ -4,6 +4,7 @@
 build/
 */build/
 cmake-build*/
+installer-output
 
 # CMake generated files
 CMakeFiles/
