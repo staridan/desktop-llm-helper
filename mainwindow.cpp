@@ -203,15 +203,40 @@ QString MainWindow::configFilePath() const
     return dir + QDir::separator() + "config.json";
 }
 
+void MainWindow::applyDefaultSettings()
+{
+    ui->lineEditApiEndpoint->setText("https://api.openai.com/v1/chat/completions");
+    ui->lineEditModelName->setText("gpt-4.1-mini");
+    ui->lineEditApiKey->setText("YOUR_API_KEY_HERE");
+    ui->lineEditProxy->setText("");
+    ui->lineEditHotkey->setText("Win+Z");
+    ui->lineEditMaxChars->setText(QString::number(1000));
+
+    auto *task = new TaskWidget;
+    task->setName("🧠 Explane");
+    task->setPrompt("Explain the meaning of what will be written. The explanation should be brief, in 1-4 sentences.");
+    task->setInsertMode(false);
+    task->setMaxTokens(300);
+    task->setTemperature(0.5);
+    connect(task, &TaskWidget::removeRequested, this, &MainWindow::removeTaskWidget);
+    connect(task, &TaskWidget::configChanged,   this, &MainWindow::saveConfig);
+    QString label = task->name();
+    ui->tasksTabWidget->addTab(task, label);
+}
+
 void MainWindow::loadConfig()
 {
     const QString path = configFilePath();
     QFile file(path);
-    if (!file.exists() || !file.open(QIODevice::ReadOnly))
+    if (!file.exists()) {
+        applyDefaultSettings();
+        saveConfig();
+        return;
+    }
+    if (!file.open(QIODevice::ReadOnly))
         return;
 
     loadingConfig = true;
-
     const QByteArray data = file.readAll();
     file.close();
 
@@ -229,8 +254,7 @@ void MainWindow::loadConfig()
     ui->lineEditApiKey->setText(settings.value("apiKey").toString());
     ui->lineEditProxy->setText(settings.value("proxy").toString());
     ui->lineEditHotkey->setText(settings.value("hotkey").toString());
-    int maxCharsVal = settings.value("maxChars").toInt(0);
-    ui->lineEditMaxChars->setText(QString::number(maxCharsVal));
+    ui->lineEditMaxChars->setText(QString::number(settings.value("maxChars").toInt()));
 
     const QJsonArray tasks = root.value("tasks").toArray();
     for (const QJsonValue &value : tasks) {
@@ -243,8 +267,8 @@ void MainWindow::loadConfig()
         task->setTemperature(obj.value("temperature").toDouble(0.5));
 
         connect(task, &TaskWidget::removeRequested, this, &MainWindow::removeTaskWidget);
-        connect(task, &TaskWidget::configChanged, this, &MainWindow::saveConfig);
-        connect(task, &TaskWidget::configChanged, this, [this, task]() {
+        connect(task, &TaskWidget::configChanged,   this, &MainWindow::saveConfig);
+        connect(task, &TaskWidget::configChanged,   this, [this, task]() {
             int idx = ui->tasksTabWidget->indexOf(task);
             if (idx != -1) {
                 QString label = task->name().isEmpty() ? tr("<Unnamed>") : task->name();

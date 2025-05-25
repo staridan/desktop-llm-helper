@@ -51,6 +51,7 @@ private:
     void saveConfig();
     QString configFilePath() const;
     QList<TaskWidget *> currentTasks() const;
+    void applyDefaultSettings();
 };
 
 #endif // MAINWINDOW_H
