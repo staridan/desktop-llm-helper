@@ -9,6 +9,7 @@
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
+    a.setApplicationName("Desktop LLM Helper");
 
     // Ensure single instance using QLockFile
     QString tmpDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation);

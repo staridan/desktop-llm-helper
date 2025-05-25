@@ -386,6 +386,7 @@ void MainWindow::createTrayIcon()
 
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setIcon(QIcon(":/icons/app.png"));
+    trayIcon->setToolTip(QCoreApplication::applicationName());
     trayIcon->setContextMenu(trayMenu);
     connect(trayIcon, &QSystemTrayIcon::activated,
             this,    &MainWindow::onTrayIconActivated);
