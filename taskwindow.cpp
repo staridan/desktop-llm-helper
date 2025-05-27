@@ -1,6 +1,7 @@
 #include <QMessageBox>
 #include "taskwindow.h"
 #include "taskwidget.h"
+#include <QDialog>
 
 #include <QColor>
 #include <QCursor>
@@ -237,8 +238,9 @@ TaskWindow::TaskWindow(const QList<TaskWidget *> &tasks, QWidget *parent)
                             SendInput(4, pasteInputs, sizeof(INPUT));
 #endif
                         } else {
-                            auto *respWin = new QWidget;
-                            respWin->setAttribute(Qt::WA_DeleteOnClose, true);
+            auto *respWin = new QDialog;
+            respWin->setAttribute(Qt::WA_DeleteOnClose, true);
+            respWin->setWindowFlags(respWin->windowFlags() | Qt::Dialog);
 
                             auto *lay = new QVBoxLayout(respWin);
                             auto *edit = new QTextEdit(respWin);
