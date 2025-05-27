@@ -38,7 +38,7 @@
        </attribute>
        <layout class="QFormLayout" name="formLayoutSettings">
         <property name="labelAlignment">
-         <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+         <set>Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignVCenter</set>
         </property>
         <property name="formAlignment">
          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
