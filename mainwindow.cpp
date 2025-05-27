@@ -153,6 +153,8 @@ MainWindow::MainWindow(QWidget *parent)
       , loadingConfig(false) {
     instance = this;
     ui->setupUi(this);
+    // Include application name in the window title
+    setWindowTitle(QCoreApplication::applicationName() + " - " + tr("Settings"));
 
     ui->tasksTabWidget->setMovable(true);
     connect(ui->tasksTabWidget->tabBar(), &QTabBar::tabMoved,
