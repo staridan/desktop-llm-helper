@@ -32,7 +32,9 @@ class GlobalKeyInterceptor {
 public:
     static bool capturing;
     static HHOOK hookHandle;
+
     enum ModBits { MB_CTRL = 1, MB_ALT = 2, MB_SHIFT = 4, MB_WIN = 8 };
+
     static int modState;
 
     static LRESULT CALLBACK hookProc(int nCode, WPARAM wParam, LPARAM lParam) {
@@ -44,20 +46,31 @@ public:
         if (wParam == WM_KEYDOWN) {
             int vk = kb->vkCode;
             switch (vk) {
-                case VK_CONTROL: case VK_LCONTROL: case VK_RCONTROL:
-                    modState |= MB_CTRL; return 1;
-                case VK_MENU:    case VK_LMENU:    case VK_RMENU:
-                    modState |= MB_ALT;  return 1;
-                case VK_SHIFT:   case VK_LSHIFT:   case VK_RSHIFT:
-                    modState |= MB_SHIFT;return 1;
-                case VK_LWIN:    case VK_RWIN:
-                    modState |= MB_WIN;  return 1;
+                case VK_CONTROL:
+                case VK_LCONTROL:
+                case VK_RCONTROL:
+                    modState |= MB_CTRL;
+                    return 1;
+                case VK_MENU:
+                case VK_LMENU:
+                case VK_RMENU:
+                    modState |= MB_ALT;
+                    return 1;
+                case VK_SHIFT:
+                case VK_LSHIFT:
+                case VK_RSHIFT:
+                    modState |= MB_SHIFT;
+                    return 1;
+                case VK_LWIN:
+                case VK_RWIN:
+                    modState |= MB_WIN;
+                    return 1;
                 default: {
                     QString seq;
-                    if (modState & MB_CTRL)  seq += "Ctrl+";
-                    if (modState & MB_ALT)   seq += "Alt+";
+                    if (modState & MB_CTRL) seq += "Ctrl+";
+                    if (modState & MB_ALT) seq += "Alt+";
                     if (modState & MB_SHIFT) seq += "Shift+";
-                    if (modState & MB_WIN)   seq += "Win+";
+                    if (modState & MB_WIN) seq += "Win+";
 
                     wchar_t name[64] = {0};
                     if (GetKeyNameTextW(
@@ -83,14 +96,25 @@ public:
         } else if (wParam == WM_KEYUP) {
             int vk = kb->vkCode;
             switch (vk) {
-                case VK_CONTROL: case VK_LCONTROL: case VK_RCONTROL:
-                    modState &= ~MB_CTRL; break;
-                case VK_MENU:    case VK_LMENU:    case VK_RMENU:
-                    modState &= ~MB_ALT;  break;
-                case VK_SHIFT:   case VK_LSHIFT:   case VK_RSHIFT:
-                    modState &= ~MB_SHIFT;break;
-                case VK_LWIN:    case VK_RWIN:
-                    modState &= ~MB_WIN;  break;
+                case VK_CONTROL:
+                case VK_LCONTROL:
+                case VK_RCONTROL:
+                    modState &= ~MB_CTRL;
+                    break;
+                case VK_MENU:
+                case VK_LMENU:
+                case VK_RMENU:
+                    modState &= ~MB_ALT;
+                    break;
+                case VK_SHIFT:
+                case VK_LSHIFT:
+                case VK_RSHIFT:
+                    modState &= ~MB_SHIFT;
+                    break;
+                case VK_LWIN:
+                case VK_RWIN:
+                    modState &= ~MB_WIN;
+                    break;
                 default: break;
             }
         }
@@ -123,11 +147,10 @@ int GlobalKeyInterceptor::modState = 0;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-    , hotkeyCaptured(false)
-    , hotkeyManager(new HotkeyManager(this))
-    , loadingConfig(false)
-{
+      , ui(new Ui::MainWindow)
+      , hotkeyCaptured(false)
+      , hotkeyManager(new HotkeyManager(this))
+      , loadingConfig(false) {
     instance = this;
     ui->setupUi(this);
 
@@ -136,11 +159,11 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::saveConfig);
 
     connect(ui->lineEditApiEndpoint, &QLineEdit::textChanged, this, &MainWindow::saveConfig);
-    connect(ui->lineEditModelName,   &QLineEdit::textChanged, this, &MainWindow::saveConfig);
-    connect(ui->lineEditApiKey,      &QLineEdit::textChanged, this, &MainWindow::saveConfig);
-    connect(ui->lineEditProxy,       &QLineEdit::textChanged, this, &MainWindow::saveConfig);
-    connect(ui->lineEditHotkey,      &QLineEdit::textChanged, this, &MainWindow::saveConfig);
-    connect(ui->lineEditMaxChars,    &QLineEdit::textChanged, this, &MainWindow::saveConfig);
+    connect(ui->lineEditModelName, &QLineEdit::textChanged, this, &MainWindow::saveConfig);
+    connect(ui->lineEditApiKey, &QLineEdit::textChanged, this, &MainWindow::saveConfig);
+    connect(ui->lineEditProxy, &QLineEdit::textChanged, this, &MainWindow::saveConfig);
+    connect(ui->lineEditHotkey, &QLineEdit::textChanged, this, &MainWindow::saveConfig);
+    connect(ui->lineEditMaxChars, &QLineEdit::textChanged, this, &MainWindow::saveConfig);
 
     ui->lineEditHotkey->installEventFilter(this);
 
@@ -155,8 +178,7 @@ MainWindow::MainWindow(QWidget *parent)
     hotkeyManager->registerHotkey(ui->lineEditHotkey->text());
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
 #ifdef Q_OS_WIN
     GlobalKeyInterceptor::stop();
 #endif
@@ -164,8 +186,7 @@ MainWindow::~MainWindow()
     instance = nullptr;
 }
 
-bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
-{
+bool MainWindow::eventFilter(QObject *obj, QEvent *ev) {
 #ifdef Q_OS_WIN
     if (obj == ui->lineEditHotkey) {
         if (ev->type() == QEvent::FocusIn) {
@@ -183,27 +204,25 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
     return QMainWindow::eventFilter(obj, ev);
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
-{
+void MainWindow::closeEvent(QCloseEvent *event) {
     event->ignore();
     hide();
 }
 
-void MainWindow::setHotkeyText(const QString &text)
-{
+void MainWindow::setHotkeyText(const QString &text) {
     ui->lineEditHotkey->setText(text);
     hotkeyCaptured = true;
     saveConfig();
 }
 
-QString MainWindow::configFilePath() const
-{
-    QString dir = QCoreApplication::applicationDirPath();
-    return dir + QDir::separator() + "config.json";
+QString MainWindow::configFilePath() const {
+    const QString configDir = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation)
+                              + QDir::separator() + QCoreApplication::applicationName();
+    QDir().mkpath(configDir);
+    return configDir + QDir::separator() + "config.json";
 }
 
-void MainWindow::applyDefaultSettings()
-{
+void MainWindow::applyDefaultSettings() {
     ui->lineEditApiEndpoint->setText("https://api.openai.com/v1/chat/completions");
     ui->lineEditModelName->setText("gpt-4.1-mini");
     ui->lineEditApiKey->setText("YOUR_API_KEY_HERE");
@@ -218,13 +237,12 @@ void MainWindow::applyDefaultSettings()
     task->setMaxTokens(300);
     task->setTemperature(0.5);
     connect(task, &TaskWidget::removeRequested, this, &MainWindow::removeTaskWidget);
-    connect(task, &TaskWidget::configChanged,   this, &MainWindow::saveConfig);
+    connect(task, &TaskWidget::configChanged, this, &MainWindow::saveConfig);
     QString label = task->name();
     ui->tasksTabWidget->addTab(task, label);
 }
 
-void MainWindow::loadConfig()
-{
+void MainWindow::loadConfig() {
     const QString path = configFilePath();
     QFile file(path);
     if (!file.exists()) {
@@ -256,7 +274,7 @@ void MainWindow::loadConfig()
     ui->lineEditMaxChars->setText(QString::number(settings.value("maxChars").toInt()));
 
     const QJsonArray tasks = root.value("tasks").toArray();
-    for (const QJsonValue &value : tasks) {
+    for (const QJsonValue &value: tasks) {
         const QJsonObject obj = value.toObject();
         auto *task = new TaskWidget;
         task->setName(obj.value("name").toString());
@@ -266,8 +284,8 @@ void MainWindow::loadConfig()
         task->setTemperature(obj.value("temperature").toDouble(0.5));
 
         connect(task, &TaskWidget::removeRequested, this, &MainWindow::removeTaskWidget);
-        connect(task, &TaskWidget::configChanged,   this, &MainWindow::saveConfig);
-        connect(task, &TaskWidget::configChanged,   this, [this, task]() {
+        connect(task, &TaskWidget::configChanged, this, &MainWindow::saveConfig);
+        connect(task, &TaskWidget::configChanged, this, [this, task]() {
             int idx = ui->tasksTabWidget->indexOf(task);
             if (idx != -1) {
                 QString label = task->name().isEmpty() ? tr("<Unnamed>") : task->name();
@@ -282,29 +300,28 @@ void MainWindow::loadConfig()
     loadingConfig = false;
 }
 
-void MainWindow::saveConfig()
-{
+void MainWindow::saveConfig() {
     if (loadingConfig)
         return;
 
     QJsonObject settings{
         {"apiEndpoint", ui->lineEditApiEndpoint->text()},
-        {"modelName",   ui->lineEditModelName->text()},
-        {"apiKey",      ui->lineEditApiKey->text()},
-        {"proxy",       ui->lineEditProxy->text()},
-        {"hotkey",      ui->lineEditHotkey->text()},
-        {"maxChars",    ui->lineEditMaxChars->text().toInt()}
+        {"modelName", ui->lineEditModelName->text()},
+        {"apiKey", ui->lineEditApiKey->text()},
+        {"proxy", ui->lineEditProxy->text()},
+        {"hotkey", ui->lineEditHotkey->text()},
+        {"maxChars", ui->lineEditMaxChars->text().toInt()}
     };
 
     QJsonArray tasksArray;
     for (int i = 0; i < ui->tasksTabWidget->count(); ++i) {
         if (auto *task = qobject_cast<TaskWidget *>(ui->tasksTabWidget->widget(i))) {
             QJsonObject taskObj{
-                {"name",       task->name()},
-                {"prompt",     task->prompt()},
-                {"insert",     task->insertMode()},
-                {"maxTokens",  task->maxTokens()},
-                {"temperature",task->temperature()}
+                {"name", task->name()},
+                {"prompt", task->prompt()},
+                {"insert", task->insertMode()},
+                {"maxTokens", task->maxTokens()},
+                {"temperature", task->temperature()}
             };
             tasksArray.append(taskObj);
         }
@@ -312,7 +329,7 @@ void MainWindow::saveConfig()
 
     QJsonObject root{
         {"settings", settings},
-        {"tasks",    tasksArray}
+        {"tasks", tasksArray}
     };
 
     QJsonDocument doc(root);
@@ -325,12 +342,11 @@ void MainWindow::saveConfig()
     hotkeyManager->registerHotkey(ui->lineEditHotkey->text());
 }
 
-void MainWindow::on_pushButtonAddTask_clicked()
-{
+void MainWindow::on_pushButtonAddTask_clicked() {
     auto *task = new TaskWidget;
     connect(task, &TaskWidget::removeRequested, this, &MainWindow::removeTaskWidget);
-    connect(task, &TaskWidget::configChanged,   this, &MainWindow::saveConfig);
-    connect(task, &TaskWidget::configChanged,   this, [this, task]() {
+    connect(task, &TaskWidget::configChanged, this, &MainWindow::saveConfig);
+    connect(task, &TaskWidget::configChanged, this, [this, task]() {
         int idx = ui->tasksTabWidget->indexOf(task);
         if (idx != -1) {
             QString lbl = task->name().isEmpty() ? tr("<Unnamed>") : task->name();
@@ -345,8 +361,7 @@ void MainWindow::on_pushButtonAddTask_clicked()
     saveConfig();
 }
 
-void MainWindow::removeTaskWidget(TaskWidget *task)
-{
+void MainWindow::removeTaskWidget(TaskWidget *task) {
     int index = ui->tasksTabWidget->indexOf(task);
     if (index != -1) {
         QWidget *page = ui->tasksTabWidget->widget(index);
@@ -356,8 +371,7 @@ void MainWindow::removeTaskWidget(TaskWidget *task)
     }
 }
 
-QList<TaskWidget *> MainWindow::currentTasks() const
-{
+QList<TaskWidget *> MainWindow::currentTasks() const {
     QList<TaskWidget *> list;
     for (int i = 0; i < ui->tasksTabWidget->count(); ++i) {
         if (auto *task = qobject_cast<TaskWidget *>(ui->tasksTabWidget->widget(i)))
@@ -366,35 +380,32 @@ QList<TaskWidget *> MainWindow::currentTasks() const
     return list;
 }
 
-void MainWindow::handleGlobalHotkey()
-{
+void MainWindow::handleGlobalHotkey() {
     new TaskWindow(currentTasks());
 }
 
-void MainWindow::createTrayIcon()
-{
+void MainWindow::createTrayIcon() {
     QMenu *trayMenu = new QMenu(this);
     QAction *restoreAction = trayMenu->addAction(tr("Settings"));
-    QAction *quitAction    = trayMenu->addAction(tr("Exit"));
+    QAction *quitAction = trayMenu->addAction(tr("Exit"));
 
     connect(restoreAction, &QAction::triggered, this, [this]() {
         showNormal();
         raise();
         activateWindow();
     });
-    connect(quitAction,    &QAction::triggered, qApp, &QApplication::quit);
+    connect(quitAction, &QAction::triggered, qApp, &QApplication::quit);
 
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setIcon(QIcon(":/icons/app.png"));
     trayIcon->setToolTip(QCoreApplication::applicationName());
     trayIcon->setContextMenu(trayMenu);
     connect(trayIcon, &QSystemTrayIcon::activated,
-            this,    &MainWindow::onTrayIconActivated);
+            this, &MainWindow::onTrayIconActivated);
     trayIcon->show();
 }
 
-void MainWindow::onTrayIconActivated(QSystemTrayIcon::ActivationReason reason)
-{
+void MainWindow::onTrayIconActivated(QSystemTrayIcon::ActivationReason reason) {
     if (reason == QSystemTrayIcon::Trigger ||
         reason == QSystemTrayIcon::DoubleClick) {
         showNormal();
