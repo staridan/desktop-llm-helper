@@ -30,6 +30,7 @@
 #include <QTimer>
 #include <QLabel>
 #include <QFont>
+#include <QStandardPaths>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -137,8 +138,11 @@ TaskWindow::TaskWindow(const QList<TaskWidget *> &tasks, QWidget *parent)
             QString combined = prompt + original;
             clipboard->setText(combined);
 
-            QString configPath = QCoreApplication::applicationDirPath()
-                                 + QDir::separator() + "config.json";
+            QString configDir = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation)
+                        + QDir::separator() + QCoreApplication::applicationName();
+            QDir().mkpath(configDir);
+            QString configPath = configDir + QDir::separator() + "config.json";
+
             QFile configFile(configPath);
             if (!configFile.open(QIODevice::ReadOnly))
                 return;
