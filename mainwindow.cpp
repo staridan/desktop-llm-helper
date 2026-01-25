@@ -268,18 +268,6 @@ private:
                          const QRect &rect, bool hot) const {
         if (!rect.isValid())
             return;
-        if (hot) {
-            QColor halo(220, 80, 80, 80);
-            painter.save();
-            painter.setRenderHint(QPainter::Antialiasing, true);
-            painter.setPen(Qt::NoPen);
-            painter.setBrush(halo);
-            QPoint center = rect.center();
-            int baseRadius = qMax(rect.width(), rect.height()) / 2;
-            int radius = baseRadius + qMax(2, baseRadius / 3);
-            painter.drawEllipse(center, radius, radius);
-            painter.restore();
-        }
         qreal inset = qMax(2.0, rect.width() / 4.0);
         QRectF drawRect = QRectF(rect).adjusted(inset, inset, -inset, -inset);
         if (drawRect.width() < 2.0 || drawRect.height() < 2.0)
