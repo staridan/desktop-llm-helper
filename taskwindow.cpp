@@ -736,6 +736,7 @@ void TaskWindow::ensureResponseWindow() {
     moveNearCursor(responseWindow, cursorPos);
 
     responseWindow->show();
+    QTimer::singleShot(0, this, &TaskWindow::updateFollowUpHeight);
     responseWindow->raise();
     responseWindow->activateWindow();
 }
