@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.16)
 
 project(DesktopLLMHelper VERSION 0.1 LANGUAGES CXX)
 
+if(NOT WIN32)
+    message(FATAL_ERROR "DesktopLLMHelper is supported only on Windows.")
+endif()
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -17,6 +21,8 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        configstore.cpp
+        configstore.h
         taskwidget.cpp
         taskwidget.h
         taskwidget.ui
@@ -39,17 +45,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
             ${main_resources}
     )
 else()
-    if(ANDROID)
-        add_library(DesktopLLMHelper SHARED
-                ${PROJECT_SOURCES}
-                ${main_resources}
-        )
-    else()
-        add_executable(DesktopLLMHelper
-                ${PROJECT_SOURCES}
-                ${main_resources}
-        )
-    endif()
+    add_executable(DesktopLLMHelper
+            ${PROJECT_SOURCES}
+            ${main_resources}
+    )
 endif()
 
 target_link_libraries(DesktopLLMHelper
@@ -61,17 +60,10 @@ target_link_libraries(DesktopLLMHelper
 
 # Для MSVC: обеспечить корректное значение __cplusplus
 if(MSVC)
-    target_compile_options(DesktopLLMHelper PRIVATE "/Zc:__cplusplus")
+    target_compile_options(DesktopLLMHelper PRIVATE "/permissive-" "/Zc:__cplusplus")
 endif()
 
-if(${QT_VERSION} VERSION_LESS 6.1.0)
-    set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.DesktopLLMHelper)
-endif()
 set_target_properties(DesktopLLMHelper PROPERTIES
-        ${BUNDLE_ID_OPTION}
-        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-        MACOSX_BUNDLE TRUE
         WIN32_EXECUTABLE TRUE
 )
 

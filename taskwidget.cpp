@@ -1,5 +1,6 @@
 #include "taskwidget.h"
 #include "ui_taskwidget.h"
+#include "configstore.h"
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QRadioButton>
@@ -72,4 +73,39 @@ void TaskWidget::setMaxTokens(int tokens) {
 
 void TaskWidget::setTemperature(double temp) {
     ui->doubleSpinBoxTemperature->setValue(temp);
+}
+
+void TaskWidget::setResponseWindowSize(const QSize &size) {
+    if (!size.isValid())
+        return;
+    responseWidth = size.width();
+    responseHeight = size.height();
+}
+
+void TaskWidget::setResponseZoom(int zoom) {
+    responseZoomValue = zoom;
+}
+
+TaskDefinition TaskWidget::toDefinition() const {
+    TaskDefinition def;
+    def.name = name();
+    def.prompt = prompt();
+    def.insertMode = insertMode();
+    def.maxTokens = maxTokens();
+    def.temperature = temperature();
+    def.responseWidth = responseWidth;
+    def.responseHeight = responseHeight;
+    def.responseZoom = responseZoomValue;
+    return def;
+}
+
+void TaskWidget::applyDefinition(const TaskDefinition &definition) {
+    setName(definition.name);
+    setPrompt(definition.prompt);
+    setInsertMode(definition.insertMode);
+    setMaxTokens(definition.maxTokens);
+    setTemperature(definition.temperature);
+    responseWidth = definition.responseWidth;
+    responseHeight = definition.responseHeight;
+    responseZoomValue = definition.responseZoom;
 }

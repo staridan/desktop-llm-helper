@@ -1,0 +1,14 @@
+# DesktopLLMHelper Rules
+
+Scope: Windows-only Qt Widgets application.
+
+- Target Windows only. CMake must fail on non-WIN32. Do not add cross-platform guards or stubs.
+- User-visible strings must be English. Russian is allowed only in comments.
+- Keep configuration persistence in ConfigStore. Do not duplicate JSON parsing/formatting elsewhere.
+- UI logic stays in MainWindow, TaskWindow, TaskWidget. Pass data via AppConfig/AppSettings/TaskDefinition.
+- Use Qt ownership and parenting for memory management. Avoid manual deletes unless required.
+- Keep network calls async with QNetworkAccessManager. Do not block the UI thread.
+- Preserve hotkey behavior: low-level hook in HotkeyManager; do not use RegisterHotKey.
+- Follow SOLID and KISS. Prefer small focused functions and minimal includes.
+- Use ASCII by default. Introduce non-ASCII only when required by existing UI strings.
+- Do not add tests unless explicitly requested.

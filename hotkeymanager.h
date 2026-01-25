@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QString>
 
-#ifdef Q_OS_WIN
 #include <QAbstractNativeEventFilter>
 #include <windows.h>
 
@@ -13,8 +12,7 @@
  *        низко-уровневым хуком WH_KEYBOARD_LL, окончательно блокируя
  *        дальнейшую обработку системой.
  *
- *  ❕ Работает только на Windows. На других платформах предоставляется
- *     пустышка, чтобы проект собирался.
+ *  ❕ Работает только на Windows.
  */
 class HotkeyManager : public QObject, public QAbstractNativeEventFilter {
     Q_OBJECT
@@ -57,18 +55,5 @@ private:
 
     bool parseSequence(const QString &sequence, UINT &modifiers, UINT &vk) const;
 };
-#else   // ────────────────────────────────────────────────────────────────
-class HotkeyManager : public QObject
-{
-    Q_OBJECT
-public:
-    explicit HotkeyManager(QObject* parent = nullptr) : QObject(parent) {}
-    bool registerHotkey(const QString&) { return false; }
-    bool nativeEventFilter(const QByteArray&, void*, qintptr*) override { return false; }
-
-signals:
-    void hotkeyPressed();
-};
-#endif // Q_OS_WIN
 
 #endif // HOTKEYMANAGER_H
