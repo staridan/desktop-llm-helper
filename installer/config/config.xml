@@ -2,9 +2,10 @@
 <Installer>
     <Name>DesktopLLMHelper</Name>
     <Version>1.0.0</Version>
-    <Title>DesktopLLMHelper Setup</Title>
-    <Publisher>Your Company</Publisher>
+    <Title>Desktop LLM Helper</Title>
+    <Publisher>Avin Lambrero</Publisher>
     <StartMenuDir>DesktopLLMHelper</StartMenuDir>
+    <ControlScript>controller.qs</ControlScript>
     <!-- Install into the per-user Programs folder under LocalAppData -->
     <TargetDir>@HomeDir@/AppData/Local/Programs/DesktopLLMHelper</TargetDir>
     <RemoveTargetDir>false</RemoveTargetDir>
