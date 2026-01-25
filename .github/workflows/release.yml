@@ -37,18 +37,13 @@ jobs:
     - name: Configure CMake
       shell: pwsh
       run: |
-        $env:PATH = "$env:IQTA_TOOLS\mingw1310_64\bin;$env:PATH"
         cmake -G "MinGW Makefiles" `
               -DCMAKE_BUILD_TYPE=Release `
-              -DCMAKE_C_COMPILER="$env:IQTA_TOOLS\mingw1310_64\bin\gcc.exe" `
-              -DCMAKE_CXX_COMPILER="$env:IQTA_TOOLS\mingw1310_64\bin\g++.exe" `
-              -DCMAKE_MAKE_PROGRAM="$env:IQTA_TOOLS\mingw1310_64\bin\mingw32-make.exe" `
               -S . -B build
       
     - name: Build
       shell: pwsh
       run: |
-        $env:PATH = "$env:IQTA_TOOLS\mingw1310_64\bin;$env:PATH"
         cmake --build build --config Release
 
     - name: Deploy Qt dependencies
