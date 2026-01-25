@@ -7,10 +7,19 @@
 #include <QStandardPaths>
 
 namespace {
+constexpr const char kDefaultModelName[] = "Default";
+
+QString normalizeModelName(const QString &value) {
+    if (value == QLatin1String(kDefaultModelName))
+        return QString();
+    return value;
+}
+
 TaskDefinition taskFromJson(const QJsonObject &obj) {
     TaskDefinition task;
     task.name = obj.value("name").toString();
     task.prompt = obj.value("prompt").toString();
+    task.modelName = normalizeModelName(obj.value("modelName").toString());
     task.insertMode = obj.value("insert").toBool(true);
     task.maxTokens = obj.value("maxTokens").toInt(300);
     task.temperature = obj.value("temperature").toDouble(0.5);
@@ -23,7 +32,7 @@ TaskDefinition taskFromJson(const QJsonObject &obj) {
 }
 
 QJsonObject taskToJson(const TaskDefinition &task) {
-    return QJsonObject{
+    QJsonObject obj{
         {"name", task.name},
         {"prompt", task.prompt},
         {"insert", task.insertMode},
@@ -33,6 +42,9 @@ QJsonObject taskToJson(const TaskDefinition &task) {
         {"responseHeight", task.responseHeight},
         {"responseZoom", task.responseZoom}
     };
+    if (!task.modelName.isEmpty())
+        obj.insert("modelName", task.modelName);
+    return obj;
 }
 } // namespace
 
@@ -46,8 +58,8 @@ QString ConfigStore::configFilePath() {
 
 AppConfig ConfigStore::defaultConfig() {
     AppConfig config;
-    config.settings.apiEndpoint = "https://api.openai.com/v1/chat/completions";
-    config.settings.modelName = "gpt-4.1-mini";
+    config.settings.apiEndpoint = "https://api.openai.com/v1/";
+    config.settings.modelName = "";
     config.settings.apiKey = "YOUR_API_KEY_HERE";
     config.settings.proxy = "";
     config.settings.hotkey = "Win+Z";
@@ -75,7 +87,7 @@ AppConfig ConfigStore::fromJson(const QJsonDocument &doc, bool *ok) {
     const QJsonObject settings = root.value("settings").toObject();
 
     config.settings.apiEndpoint = settings.value("apiEndpoint").toString();
-    config.settings.modelName = settings.value("modelName").toString();
+    config.settings.modelName = normalizeModelName(settings.value("modelName").toString());
     config.settings.apiKey = settings.value("apiKey").toString();
     config.settings.proxy = settings.value("proxy").toString();
     config.settings.hotkey = settings.value("hotkey").toString();

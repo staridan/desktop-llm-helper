@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QString>
+#include <QStringList>
 #include <QSize>
 
 namespace Ui {
@@ -20,15 +21,19 @@ public:
 
     QString name() const;
     QString prompt() const;
+    QString modelName() const;
     bool insertMode() const;
     void setName(const QString &name);
     void setPrompt(const QString &prompt);
+    void setModelName(const QString &modelName);
     void setInsertMode(bool insert);
 
     int maxTokens() const;
     double temperature() const;
     void setMaxTokens(int tokens);
     void setTemperature(double temp);
+    void setAvailableModels(const QStringList &models);
+    void setRefreshEnabled(bool enabled);
 
     void setResponseWindowSize(const QSize &size);
     void setResponseZoom(int zoom);
@@ -38,6 +43,7 @@ public:
 
 signals:
     void configChanged();
+    void refreshModelsRequested();
 
 private:
     Ui::TaskWidget *ui;

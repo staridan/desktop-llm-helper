@@ -48,6 +48,28 @@
 #include <windows.h>
 
 namespace {
+constexpr const char kDefaultModelLabel[] = "Default";
+
+QUrl buildApiUrl(const QString &baseUrl, const QString &pathSuffix) {
+    QUrl url(baseUrl.trimmed());
+    if (!url.isValid())
+        return QUrl();
+    QString path = url.path();
+    if (!path.endsWith('/'))
+        path += '/';
+    QString suffix = pathSuffix;
+    if (suffix.startsWith('/'))
+        suffix.remove(0, 1);
+    url.setPath(path + suffix);
+    return url;
+}
+
+QString normalizeModelName(const QString &name) {
+    if (name == QLatin1String(kDefaultModelLabel))
+        return QString();
+    return name;
+}
+
 bool isCodeBlock(const QTextBlock &block) {
     const QTextBlockFormat format = block.blockFormat();
     if (format.hasProperty(QTextFormat::BlockCodeFence))
@@ -492,7 +514,8 @@ void TaskWindow::sendRequestWithHistory(const TaskDefinition &task) {
     resetRequestState();
     setRequestInFlight(true);
 
-    QNetworkRequest request(QUrl(settings.apiEndpoint));
+    const QUrl requestUrl = buildApiUrl(settings.apiEndpoint, "chat/completions");
+    QNetworkRequest request(requestUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Authorization", "Bearer " + settings.apiKey.toUtf8());
 
@@ -505,7 +528,11 @@ void TaskWindow::sendRequestWithHistory(const TaskDefinition &task) {
     }
 
     QJsonObject body;
-    body["model"] = settings.modelName;
+    const QString modelName = task.modelName.isEmpty()
+        ? normalizeModelName(settings.modelName)
+        : normalizeModelName(task.modelName);
+    if (!modelName.isEmpty())
+        body["model"] = modelName;
     body["messages"] = messagesArray;
     body["max_tokens"] = task.maxTokens;
     body["temperature"] = task.temperature;

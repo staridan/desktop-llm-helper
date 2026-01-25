@@ -17,6 +17,7 @@ struct AppSettings {
 struct TaskDefinition {
     QString name;
     QString prompt;
+    QString modelName;
     bool insertMode = true;
     int maxTokens = 300;
     double temperature = 0.5;

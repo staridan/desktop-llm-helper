@@ -9,6 +9,7 @@
 #include <QCloseEvent>
 #include <QPointer>
 #include <QSize>
+#include <QStringList>
 
 #include "hotkeymanager.h"
 #include "configstore.h"
@@ -19,6 +20,7 @@ QT_END_NAMESPACE
 
 class TaskWidget;
 class TaskWindow;
+class QNetworkAccessManager;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -45,6 +47,7 @@ private slots:
     void removeTaskWidget(TaskWidget *task);
     void updateTaskResponsePrefs(int taskIndex, const QSize &size, int zoom);
     void commitTaskResponsePrefs();
+    void requestModelList();
 
 private:
     Ui::MainWindow *ui;
@@ -54,6 +57,8 @@ private:
     bool loadingConfig;
     QSystemTrayIcon *trayIcon;
     QPointer<TaskWindow> menuWindow;
+    QNetworkAccessManager *modelNetworkManager;
+    QStringList availableModels;
 
     void createTrayIcon();
     void loadConfig();
@@ -70,6 +75,10 @@ private:
     bool isAddTabIndex(int index) const;
     void ensureAddTab();
     void ensureAddTabLast();
+    void applyModelList(const QStringList &models);
+    void updateModelCombos(const QString &defaultModel);
+    void setModelRefreshEnabled(bool enabled);
+    QString currentDefaultModel() const;
 };
 
 #endif // MAINWINDOW_H
