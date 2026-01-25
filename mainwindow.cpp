@@ -349,11 +349,15 @@ void MainWindow::clearTasks() {
 }
 
 void MainWindow::handleGlobalHotkey() {
+    if (menuWindow) {
+        menuWindow->close();
+        menuWindow = nullptr;
+    }
     const AppConfig config = buildConfigFromUi();
-    auto *window = new TaskWindow(config.tasks, config.settings);
-    connect(window, &TaskWindow::taskResponsePrefsChanged,
+    menuWindow = new TaskWindow(config.tasks, config.settings);
+    connect(menuWindow, &TaskWindow::taskResponsePrefsChanged,
             this, &MainWindow::updateTaskResponsePrefs);
-    connect(window, &TaskWindow::taskResponsePrefsCommitRequested,
+    connect(menuWindow, &TaskWindow::taskResponsePrefsCommitRequested,
             this, &MainWindow::commitTaskResponsePrefs);
 }
 

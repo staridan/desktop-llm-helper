@@ -1,19 +1,43 @@
-# Desktop-LLM-Helper
+# Desktop LLM Helper
 
-The application allows you to quickly process any selected text using pre-configured tasks.
+A Windows desktop application that enables seamless text processing with Large Language Models from any application. Select text anywhere, trigger a hotkey, and instantly send it to your LLM for processing. Results can be inserted directly back into your workflow or displayed in an interactive chat dialog.
 
-Each task has its own customizable prompt for generating results. When you select a task, the program automatically copies the currently selected text, sends it along with the prompt to the specified LLM API endpoint, and returns the result—either inserting it into the current application or opening a separate window with the response.
+## Features
+
+- **System-wide hotkey integration**: Access LLM capabilities from any application
+- **Customizable task presets**: Configure multiple tasks with different prompts and behaviors
+- **Flexible response handling**:
+  - **Insert Mode**: Automatically paste LLM responses directly into the active application
+  - **Dialog Mode**: View responses in a dedicated chat window with conversation history
+- **Clipboard integration**: Seamlessly captures selected text and returns results via system clipboard
+- **Multiple LLM provider support**: Works with OpenAI-compatible API endpoints
+
+## How It Works
+
+1. **Configure Tasks**: Set up custom tasks with specific prompts (e.g., "Translate to English", "Fix Grammar", "Explain Concept")
+2. **Set Global Hotkey**: Define a system-wide keyboard shortcut to trigger the task menu
+3. **Use Anywhere**: Select text in any application and press your configured hotkey
+4. **Choose Task**: A popup menu displays your configured tasks
+5. **Automatic Processing**: 
+   - The application captures the selected text (simulates Ctrl+C)
+   - Sends it to your LLM with the task's prompt
+   - Returns the response based on your configuration:
+     - **Insert Answer**: Automatically pastes the result (simulates Ctrl+V)
+     - **Show in Window**: Opens an interactive chat dialog for further conversation
+
+## Use Cases
+
+- Translation between languages
+- Grammar and spelling correction
+- Text rephrasing and style adjustment
+- Technical term explanations
+- Code documentation and refactoring
+- Summarization and content analysis
+- And many more...
 
 ---
 
-**Key Features:**
-- Global hotkey to open the task menu
-- Support for inserting the response directly into the current application or displaying it in a separate window
-- Customizable prompts, token limits, and generation temperature
-
----
-
-## Build (Windows)
+## Build
 
 Requirements:
 - Windows

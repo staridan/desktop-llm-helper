@@ -18,6 +18,7 @@ namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 class TaskWidget;
+class TaskWindow;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -50,6 +51,7 @@ private:
     HotkeyManager *hotkeyManager;
     bool loadingConfig;
     QSystemTrayIcon *trayIcon;
+    QPointer<TaskWindow> menuWindow;
 
     void createTrayIcon();
     void loadConfig();
