@@ -1,0 +1,114 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '6.8.1'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_mingw'
+        modules: ''
+        tools: 'tools_ifw'
+        
+    - name: Get version from tag
+      id: get_version
+      shell: pwsh
+      run: |
+        $version = "${{ github.ref_name }}".TrimStart('v')
+        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+        echo "Version: $version"
+
+    - name: Configure CMake
+      shell: pwsh
+      run: |
+        $env:PATH = "$env:IQTA_TOOLS\mingw1310_64\bin;$env:PATH"
+        cmake -G "MinGW Makefiles" `
+              -DCMAKE_BUILD_TYPE=Release `
+              -DCMAKE_C_COMPILER="$env:IQTA_TOOLS\mingw1310_64\bin\gcc.exe" `
+              -DCMAKE_CXX_COMPILER="$env:IQTA_TOOLS\mingw1310_64\bin\g++.exe" `
+              -DCMAKE_MAKE_PROGRAM="$env:IQTA_TOOLS\mingw1310_64\bin\mingw32-make.exe" `
+              -S . -B build
+      
+    - name: Build
+      shell: pwsh
+      run: |
+        $env:PATH = "$env:IQTA_TOOLS\mingw1310_64\bin;$env:PATH"
+        cmake --build build --config Release
+
+    - name: Deploy Qt dependencies
+      shell: pwsh
+      run: |
+        New-Item -ItemType Directory -Force -Path "build\deploy"
+        Copy-Item "build\DesktopLLMHelper.exe" "build\deploy\"
+        & "$env:Qt6_DIR\bin\windeployqt.exe" --release --no-translations --no-opengl-sw "build\deploy\DesktopLLMHelper.exe"
+
+    - name: Prepare installer package
+      shell: pwsh
+      run: |
+        $dataDir = "installer\packages\com.desktopllmhelper\data"
+        if (Test-Path $dataDir) {
+            Remove-Item -Recurse -Force $dataDir
+        }
+        New-Item -ItemType Directory -Force -Path $dataDir
+        Copy-Item -Recurse "build\deploy\*" $dataDir\
+
+    - name: Create installer
+      shell: pwsh
+      run: |
+        New-Item -ItemType Directory -Force -Path "installer-output"
+        $ifwBin = Get-ChildItem -Path "$env:IQTA_TOOLS" -Filter "binarycreator.exe" -Recurse | Select-Object -First 1
+        if (-not $ifwBin) {
+            throw "binarycreator.exe not found in IFW tools"
+        }
+        & $ifwBin.FullName `
+            --config "installer\config\config.xml" `
+            --packages "installer\packages" `
+            "installer-output\DesktopLLMHelperInstaller.exe"
+
+    - name: Create portable archive
+      shell: pwsh
+      run: |
+        Compress-Archive -Path "build\deploy\*" -DestinationPath "installer-output\DesktopLLMHelper-portable-${{ steps.get_version.outputs.VERSION }}.zip"
+
+    - name: Create Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      shell: pwsh
+      run: |
+        $releaseNotes = @"
+        # DesktopLLMHelper ${{ github.ref_name }}
+        
+        ## Installation
+        
+        ### Installer (Recommended)
+        Download **DesktopLLMHelperInstaller.exe** and run it to install the application.
+        
+        ### Portable Version
+        Download the portable zip archive, extract it, and run **DesktopLLMHelper.exe**.
+        
+        ---
+        
+        **Note:** This application requires Windows OS.
+        "@
+        
+        gh release create ${{ github.ref_name }} `
+          --title "Release ${{ github.ref_name }}" `
+          --notes $releaseNotes `
+          installer-output\DesktopLLMHelperInstaller.exe `
+          installer-output\DesktopLLMHelper-portable-${{ steps.get_version.outputs.VERSION }}.zip
