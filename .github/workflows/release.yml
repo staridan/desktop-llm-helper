@@ -23,8 +23,8 @@ jobs:
         host: 'windows'
         target: 'desktop'
         arch: 'win64_mingw'
-        modules: ''
-        tools: 'tools_ifw'
+        cache: true
+        tools: 'tools_ifw tools_mingw90'
         
     - name: Get version from tag
       id: get_version
@@ -35,32 +35,16 @@ jobs:
         echo "Version: $version"
 
     - name: Configure CMake
-      shell: pwsh
-      run: |
-        $qtDir = Split-Path -Parent $env:Qt6_DIR
-        $mingwPath = Join-Path $qtDir "..\..\..\Tools\mingw*_64\bin" | Resolve-Path | Select-Object -First 1
-        $env:PATH = "$mingwPath;$env:PATH"
-        Write-Host "Using MinGW from: $mingwPath"
-        
-        cmake -G "MinGW Makefiles" `
-              -DCMAKE_BUILD_TYPE=Release `
-              -S . -B build
+      run: cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=Release
       
     - name: Build
-      shell: pwsh
-      run: |
-        $qtDir = Split-Path -Parent $env:Qt6_DIR
-        $mingwPath = Join-Path $qtDir "..\..\..\Tools\mingw*_64\bin" | Resolve-Path | Select-Object -First 1
-        $env:PATH = "$mingwPath;$env:PATH"
-        
-        cmake --build build --config Release
+      run: cmake --build build --config Release
 
     - name: Deploy Qt dependencies
-      shell: pwsh
       run: |
         New-Item -ItemType Directory -Force -Path "build\deploy"
         Copy-Item "build\DesktopLLMHelper.exe" "build\deploy\"
-        & "$env:Qt6_DIR\bin\windeployqt.exe" --release --no-translations --no-opengl-sw "build\deploy\DesktopLLMHelper.exe"
+        windeployqt --release --no-translations --no-opengl-sw "build\deploy\DesktopLLMHelper.exe"
 
     - name: Prepare installer package
       shell: pwsh
@@ -73,17 +57,9 @@ jobs:
         Copy-Item -Recurse "build\deploy\*" $dataDir\
 
     - name: Create installer
-      shell: pwsh
       run: |
         New-Item -ItemType Directory -Force -Path "installer-output"
-        $ifwBin = Get-ChildItem -Path "$env:IQTA_TOOLS" -Filter "binarycreator.exe" -Recurse | Select-Object -First 1
-        if (-not $ifwBin) {
-            throw "binarycreator.exe not found in IFW tools"
-        }
-        & $ifwBin.FullName `
-            --config "installer\config\config.xml" `
-            --packages "installer\packages" `
-            "installer-output\DesktopLLMHelperInstaller.exe"
+        binarycreator --config "installer\config\config.xml" --packages "installer\packages" "installer-output\DesktopLLMHelperInstaller.exe"
 
     - name: Create portable archive
       shell: pwsh
