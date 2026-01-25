@@ -37,6 +37,11 @@ jobs:
     - name: Configure CMake
       shell: pwsh
       run: |
+        $qtDir = Split-Path -Parent $env:Qt6_DIR
+        $mingwPath = Join-Path $qtDir "..\..\..\Tools\mingw*_64\bin" | Resolve-Path | Select-Object -First 1
+        $env:PATH = "$mingwPath;$env:PATH"
+        Write-Host "Using MinGW from: $mingwPath"
+        
         cmake -G "MinGW Makefiles" `
               -DCMAKE_BUILD_TYPE=Release `
               -S . -B build
@@ -44,6 +49,10 @@ jobs:
     - name: Build
       shell: pwsh
       run: |
+        $qtDir = Split-Path -Parent $env:Qt6_DIR
+        $mingwPath = Join-Path $qtDir "..\..\..\Tools\mingw*_64\bin" | Resolve-Path | Select-Object -First 1
+        $env:PATH = "$mingwPath;$env:PATH"
+        
         cmake --build build --config Release
 
     - name: Deploy Qt dependencies
