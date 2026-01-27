@@ -71,20 +71,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       shell: pwsh
       run: |
-        $releaseNotes = @"
-        # DesktopLLMHelper ${{ github.ref_name }}
-        
-        ## Installation
-        
-        ### Installer (Recommended)
-        Download **DesktopLLMHelperInstaller.exe** and run it to install the application.
-        
-        ### Portable Version
-        Download the portable zip archive, extract it, and run **DesktopLLMHelper.exe**.
-        
-        ---
-        
-        **Note:** This application requires Windows OS.
+        $releaseNotes = @"      
+        Download **DesktopLLMHelperInstaller.exe** and run it to install the application.                
         "@
         
         gh release create ${{ github.ref_name }} `
