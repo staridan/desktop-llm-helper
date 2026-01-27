@@ -57,14 +57,11 @@ jobs:
         Copy-Item -Recurse "build\deploy\*" $dataDir\
 
     - name: Create installer
-      run: |
-        New-Item -ItemType Directory -Force -Path "installer-output"
-        binarycreator --config "installer\config\config.xml" --packages "installer\packages" "installer-output\DesktopLLMHelperInstaller.exe"
-
-    - name: Create portable archive
       shell: pwsh
       run: |
-        Compress-Archive -Path "build\deploy\*" -DestinationPath "installer-output\DesktopLLMHelper-portable-${{ steps.get_version.outputs.VERSION }}.zip"
+        New-Item -ItemType Directory -Force -Path "installer-output"
+        $installerPath = "installer-output\DesktopLLMHelperInstaller-${{ steps.get_version.outputs.VERSION }}.exe"
+        binarycreator --config "installer\config\config.xml" --packages "installer\packages" $installerPath
 
     - name: Create Release
       env:
@@ -72,11 +69,10 @@ jobs:
       shell: pwsh
       run: |
         $releaseNotes = @"      
-        Download **DesktopLLMHelperInstaller.exe** and run it to install the application.                
+        Download **DesktopLLMHelperInstaller-${{ steps.get_version.outputs.VERSION }}.exe** and run it to install the application.                
         "@
         
         gh release create ${{ github.ref_name }} `
           --title "Release ${{ github.ref_name }}" `
           --notes $releaseNotes `
-          installer-output\DesktopLLMHelperInstaller.exe `
-          installer-output\DesktopLLMHelper-portable-${{ steps.get_version.outputs.VERSION }}.zip
+          installer-output\DesktopLLMHelperInstaller-${{ steps.get_version.outputs.VERSION }}.exe
