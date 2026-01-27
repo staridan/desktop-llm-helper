@@ -1,5 +1,5 @@
 <div align="center">
-  <img src=".github/img/icon.png" alt="Desktop LLM Helper Icon" width="256" height="256">
+  <img src=".github/img/icon.png" alt="Desktop LLM Helper Icon" width="192" height="192">
 
 # Desktop LLM Helper
 
