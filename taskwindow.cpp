@@ -541,6 +541,7 @@ void TaskWindow::sendRequestWithHistory(const TaskDefinition &task) {
     QJsonDocument bodyDoc(body);
 
     QNetworkReply *reply = networkManager->post(request, bodyDoc.toJson());
+    currentReply = reply;
     connect(reply, &QNetworkReply::readyRead, this, [this, task, reply]() {
         handleReplyReadyRead(task, reply);
     });
@@ -603,6 +604,8 @@ void TaskWindow::handleReplyReadyRead(const TaskDefinition &task, QNetworkReply 
 }
 
 void TaskWindow::handleReplyFinished(const TaskDefinition &task, QNetworkReply *reply) {
+    if (reply == currentReply)
+        currentReply = nullptr;
     hideLoadingIndicator();
 
     if (!streamBuffer.isEmpty()) {
@@ -613,6 +616,11 @@ void TaskWindow::handleReplyFinished(const TaskDefinition &task, QNetworkReply *
     }
 
     if (reply->error() != QNetworkReply::NoError) {
+        if (reply->error() == QNetworkReply::OperationCanceledError) {
+            reply->deleteLater();
+            setRequestInFlight(false);
+            return;
+        }
         const QString errStr = reply->errorString();
         const int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
         QMessageBox::critical(this,
@@ -726,7 +734,27 @@ void TaskWindow::ensureResponseWindow() {
     }
     updateFollowUpHeight();
 
-    lay->addWidget(input);
+    auto *inputRow = new QWidget(responseWindow);
+    auto *inputRowLayout = new QHBoxLayout(inputRow);
+    inputRowLayout->setContentsMargins(0, 0, 0, 0);
+    inputRowLayout->setSpacing(6);
+    inputRowLayout->addWidget(input, 1);
+
+    auto *stopBtn = new QPushButton(tr("Stop"), inputRow);
+    QSizePolicy stopPolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+    stopBtn->setSizePolicy(stopPolicy);
+    stopBtn->setMinimumWidth(70);
+    stopBtn->setMaximumWidth(90);
+    stopBtn->setEnabled(requestInFlight);
+    stopButton = stopBtn;
+    connect(stopBtn, &QPushButton::clicked, this, [this]() {
+        cancelRequest();
+    });
+    inputRowLayout->addWidget(stopBtn, 0);
+
+    lay->addWidget(inputRow);
+    lay->setStretch(0, 1);
+    lay->setStretch(1, 0);
     setRequestInFlight(requestInFlight);
 
     responseWindow->setWindowTitle(tr("LLM Response"));
@@ -835,6 +863,10 @@ void TaskWindow::updateFollowUpHeight() {
         followUpInput->setFixedHeight(targetHeight);
         followUpInput->updateGeometry();
     }
+    if (stopButton) {
+        stopButton->setFixedHeight(targetHeight);
+        stopButton->updateGeometry();
+    }
 }
 
 void TaskWindow::appendMessageToHistory(const QString &role, const QString &content) {
@@ -894,6 +926,10 @@ void TaskWindow::resetRequestState() {
     streamBuffer.clear();
     pendingResponseText.clear();
     sawStreamFormat = false;
+    if (currentReply) {
+        disconnect(currentReply, nullptr, this, nullptr);
+        currentReply.clear();
+    }
 }
 
 void TaskWindow::resetConversationState() {
@@ -912,6 +948,8 @@ void TaskWindow::setRequestInFlight(bool inFlight) {
     requestInFlight = inFlight;
     if (followUpInput)
         followUpInput->setEnabled(!inFlight);
+    if (stopButton)
+        stopButton->setEnabled(inFlight);
     if (!inFlight && followUpInput && responseWindow && responseWindow->isVisible()) {
         responseWindow->raise();
         responseWindow->activateWindow();
@@ -919,6 +957,14 @@ void TaskWindow::setRequestInFlight(bool inFlight) {
             if (followUpInput)
                 followUpInput->setFocus(Qt::OtherFocusReason);
         });
+    }
+}
+
+void TaskWindow::cancelRequest() {
+    if (!requestInFlight)
+        return;
+    if (currentReply) {
+        currentReply->abort();
     }
 }
 
@@ -1017,6 +1063,8 @@ bool TaskWindow::eventFilter(QObject *watched, QEvent *event) {
     }
     if (responseWindow && watched == responseWindow.data()
         && event->type() == QEvent::Close) {
+        // Ensure LLM request is stopped same as pressing Stop button
+        cancelRequest();
         emit taskResponsePrefsCommitRequested();
     }
     if (responseWindow && watched == responseWindow.data()
